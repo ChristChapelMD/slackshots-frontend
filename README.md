@@ -1,6 +1,6 @@
 # SlackShots
 
-![SlackShots Logo](public/logo.png)
+![SlackShots Logo](public/SSLOGO_NOBG.png)
 
 SlackShots is a powerful web application designed to make uploading and managing files in Slack workspaces effortless. With SlackShots, users can batch upload hundreds of files to Slack channels with ease, organize them efficiently, and manage their uploads from a centralized dashboard.
 
