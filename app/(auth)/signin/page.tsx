@@ -22,6 +22,15 @@ export default function SignInPage() {
       />
 
       <div className="mb-8 text-center relative z-10">
+        <HeroLink as={NextLink} href="/">
+          <Image
+            alt="SlackShots Logo"
+            className="mx-auto pointer-events-none"
+            height={80}
+            src={SlackShotsLogo}
+            width={80}
+          />
+        </HeroLink>
         <h1 className="text-3xl font-extrabold">Welcome back</h1>
         <p className="mt-2 text-sm">Sign in with Slack or your email</p>
       </div>
