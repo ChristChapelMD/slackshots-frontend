@@ -35,6 +35,7 @@ export interface UseAuthReturn {
   sessionLoading: boolean;
   isAuthenticated: boolean;
 
+  signInWithSlack: () => Promise<AuthResult>;
   signUp: (params: SignUpParams) => Promise<AuthResult>;
   signIn: (params: SignInParams) => Promise<AuthResult>;
   signOut: () => Promise<void>;

@@ -30,6 +30,50 @@ export function useAuth(): UseAuthReturn {
     setError(null);
   }, []);
 
+  const signInWithSlack = useCallback(async () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    setLoading(true);
+    setError(null);
+
+    abortControllerRef.current = new AbortController();
+
+    try {
+      const { data, error } = await authClient.signIn.social({
+        provider: "slack",
+        scopes: ["channels:read", "chat:write"], // Add the proper scopes
+      });
+
+      if (error) {
+        const authError: AuthError =
+          error instanceof Error ? error : new Error(String(error));
+
+        throw authError;
+      }
+
+      return { data, error: null, success: true };
+    } catch (err: any) {
+      const authError: AuthError =
+        err instanceof Error ? err : new Error("Sign in failed");
+
+      if (
+        err.code === "INVALID_CREDENTIALS" ||
+        err.message?.includes("Invalid")
+      ) {
+        authError.message = "Invalid email or password";
+      } // add the slack specifc error codes (if better auth exposes them)
+
+      setError(authError);
+
+      return { data: null, error: authError, success: false };
+    } finally {
+      setLoading(false);
+      abortControllerRef.current = null;
+    }
+  }, []);
+
   const signUp = useCallback(
     async ({
       email,
@@ -169,6 +213,7 @@ export function useAuth(): UseAuthReturn {
     sessionLoading,
     isAuthenticated,
 
+    signInWithSlack,
     signUp,
     signIn,
     signOut,
