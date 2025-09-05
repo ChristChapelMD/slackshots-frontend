@@ -317,7 +317,7 @@ const TextAnimateBase = ({
   accessible = true,
   ...props
 }: TextAnimateProps) => {
-  const MotionComponent = motion.create(Component);
+  const MotionComponent = motion.create(Component as any);
 
   let segments: string[] = [];
 
