@@ -58,7 +58,7 @@ export default function SignInPage() {
           className="text-primary hover:text-primary-500 underline font-medium"
           href="/signup"
         >
-          Create one
+          Sign up
         </NextLink>
       </p>
       <p className="text-center text-sm text-zinc-500">
