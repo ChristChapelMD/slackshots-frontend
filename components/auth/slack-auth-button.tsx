@@ -1,9 +1,14 @@
 "use client";
+
 import Image from "next/image";
 import { Button } from "@heroui/button";
-import { Link } from "@heroui/link";
+import { Link as HeroLink } from "@heroui/link";
+import NextLink from "next/link";
 
-export function SlackAuthButton() {
+import SlackLogo from "@/public/SLA-appIcon-desktop.png";
+import { useAuth } from "@/hooks/use-auth";
+
+export function _SlackAuthButton() {
   const openSlackAuthPopup = () => {
     const width = 600;
     const height = 600;
@@ -28,7 +33,7 @@ export function SlackAuthButton() {
     <Button
       isExternal
       aria-label="Add Slacks to Your Slack Workspace"
-      as={Link}
+      as={HeroLink}
       className="bg-transparent cursor-pointer p-0"
       radius="none"
       onPress={openSlackAuthPopup}
@@ -40,6 +45,20 @@ export function SlackAuthButton() {
         src="https://platform.slack-edge.com/img/add_to_slack@2x.png"
         width={139}
       />
+    </Button>
+  );
+}
+
+export function SlackAuthButton() {
+  const { signInWithSlack, loading, error } = useAuth();
+  return (
+    <Button
+      as={HeroLink}
+      className="flex items-center justify-center gap-2 w-full rounded-lg px-4 py-3 text-slate-900 font-medium border border-zinc-300 bg-white shadow-sm hover:shadow-md transition-shadow"
+      onPress={signInWithSlack}
+    >
+      <Image alt="Slack Logo" height={24} src={SlackLogo} width={24} />
+      Continue with Slack
     </Button>
   );
 }

@@ -9,6 +9,7 @@ import NextLink from "next/link";
 import SlackShotsLogo from "@/public/SSLOGO_NOBG.png";
 import SlackLogo from "@/public/SLA-appIcon-desktop.png";
 import SignInForm from "@/components/auth/sign-in-form";
+import { SlackAuthButton } from "@/components/auth/slack-auth-button";
 
 export default function SignInPage() {
   return (
@@ -35,14 +36,7 @@ export default function SignInPage() {
         <p className="mt-2 text-sm">Sign in with Slack or your email</p>
       </div>
 
-      <HeroLink
-        as={NextLink}
-        className="flex items-center justify-center gap-2 w-full rounded-lg px-4 py-3 text-slate-900 font-medium border border-zinc-300 bg-white shadow-sm hover:shadow-md transition-shadow"
-        href="/dashboard"
-      >
-        <Image alt="Slack Logo" height={24} src={SlackLogo} width={24} />
-        Continue with Slack
-      </HeroLink>
+      <SlackAuthButton />
 
       <div className="my-6 flex items-center">
         <Divider className="flex-1" />
