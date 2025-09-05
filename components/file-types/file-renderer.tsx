@@ -6,7 +6,6 @@ import { FileItem } from "@/types/service-types/file-service";
 import { fileTypeRegistry } from "@/lib/file-types/file-type-registry";
 import { ViewMode } from "@/lib/file-types/handlers/file-type-handler";
 
-// components/file-types/file-renderer.tsx
 export const FileRenderer = memo(
   ({
     item,
