@@ -203,7 +203,7 @@ export default function SignUpForm() {
           (touched.confirmPassword || touched.password) &&
           (isConfirmPasswordInvalid || isPasswordInvalid)
         }
-        label="Password"
+        label="Confrim Password"
         type={confirmPasswordVisible ? "text" : "password"}
         value={confirmPassword}
         variant="faded"
