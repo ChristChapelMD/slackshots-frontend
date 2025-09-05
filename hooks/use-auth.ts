@@ -43,7 +43,6 @@ export function useAuth(): UseAuthReturn {
     try {
       const { data, error } = await authClient.signIn.social({
         provider: "slack",
-        scopes: ["channels:read", "chat:write"], // Add the proper scopes
       });
 
       if (error) {

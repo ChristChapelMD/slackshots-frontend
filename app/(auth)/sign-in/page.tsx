@@ -12,7 +12,7 @@ import { SlackAuthButton } from "@/components/auth/slack-auth-button";
 
 export default function SignInPage() {
   return (
-    <Card className="w-full max-w-md rounded-xl drop-shadow-lg p-8 gap-1 text-foreground font-semibold border border-zinc-400/25 group relative flex shadow-[inset_0_-8px_10px_#8fdfff1f] whitespace-nowrap">
+    <Card className="w-full max-w-sm rounded-xl drop-shadow-lg p-8 gap-1 text-foreground font-semibold border border-zinc-400/25 group relative flex shadow-[inset_0_-8px_10px_#8fdfff1f] whitespace-nowrap">
       <Image
         alt="SlackShots Logo"
         className="absolute -top-16 -right-16 blur-3xl opacity-20 pointer-events-none"
@@ -49,7 +49,7 @@ export default function SignInPage() {
         Don’t have an account?{" "}
         <NextLink
           className="text-primary hover:text-primary-500 underline font-medium"
-          href="/signup"
+          href="/sign-up"
         >
           Sign up
         </NextLink>
