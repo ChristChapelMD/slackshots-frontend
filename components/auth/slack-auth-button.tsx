@@ -1,7 +1,11 @@
 "use client";
+
 import Image from "next/image";
 import { Button } from "@heroui/button";
-import { Link } from "@heroui/link";
+import { Link as HeroLink } from "@heroui/link";
+
+import SlackLogo from "@/public/SLA-appIcon-desktop.png";
+import { useAuth } from "@/hooks/use-auth";
 
 export function SlackAuthButton() {
   const openSlackAuthPopup = () => {
@@ -28,7 +32,7 @@ export function SlackAuthButton() {
     <Button
       isExternal
       aria-label="Add Slacks to Your Slack Workspace"
-      as={Link}
+      as={HeroLink}
       className="bg-transparent cursor-pointer p-0"
       radius="none"
       onPress={openSlackAuthPopup}
