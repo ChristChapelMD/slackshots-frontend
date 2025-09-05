@@ -13,7 +13,7 @@ export default function AuthLayout({
       <AnimatedGridPattern
         className={cn(
           "[mask-image:radial-gradient(700px_circle_at_center,white,transparent)]",
-          "skew-y-12 overflow",
+          "skew-y-12 overflow-hidden overscroll-none",
         )}
         duration={3}
         maxOpacity={0.1}

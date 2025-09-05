@@ -7,7 +7,6 @@ import { Link as HeroLink } from "@heroui/link";
 import NextLink from "next/link";
 
 import SlackShotsLogo from "@/public/SSLOGO_NOBG.png";
-import SlackLogo from "@/public/SLA-appIcon-desktop.png";
 import SignInForm from "@/components/auth/sign-in-form";
 import { SlackAuthButton } from "@/components/auth/slack-auth-button";
 
