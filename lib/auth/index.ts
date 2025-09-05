@@ -10,4 +10,10 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  socialProviders: {
+    slack: {
+      clientId: process.env.SLACK_CLIENT_ID as string,
+      clientSecret: process.env.SLACK_CLIENT_SECRET as string,
+    },
+  },
 });
