@@ -54,7 +54,7 @@ export default function SignUpPage() {
         Already have an account?{" "}
         <NextLink
           className="text-primary hover:text-primary-500 underline font-medium"
-          href="/signin"
+          href="/sign-in"
         >
           Sign in
         </NextLink>

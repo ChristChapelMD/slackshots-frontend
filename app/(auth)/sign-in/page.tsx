@@ -49,7 +49,7 @@ export default function SignInPage() {
         Don’t have an account?{" "}
         <NextLink
           className="text-primary hover:text-primary-500 underline font-medium"
-          href="/signup"
+          href="/sign-up"
         >
           Sign up
         </NextLink>
