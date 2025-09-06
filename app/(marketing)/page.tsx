@@ -1,4 +1,3 @@
-import { SlackAuthButton } from "@/components/auth/slack-auth-button";
 import { HeroSection } from "@/components/marketing/layouts/hero-section";
 
 export default function HomePage() {
@@ -7,8 +6,6 @@ export default function HomePage() {
       <div>
         <HeroSection />
       </div>
-
-      <SlackAuthButton />
     </section>
   );
 }
