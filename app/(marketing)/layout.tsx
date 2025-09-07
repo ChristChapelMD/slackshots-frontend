@@ -31,9 +31,7 @@ export default function HomeLayout({
   return (
     <div className="relative flex flex-col h-screen">
       <Navbar />
-      <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-        {children}
-      </main>
+      <main className="mx-auto max-w-7xl pt-16 px-6 flex-grow">{children}</main>
       <footer className="w-full py-8 mt-16">
         <div className="max-w-7xl mx-auto px-4 flex flex-col items-center justify-between gap-4">
           <p className="text-sm">

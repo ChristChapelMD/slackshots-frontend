@@ -16,7 +16,7 @@ import Image from "next/image";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { GithubIcon, HeartFilledIcon } from "@/components/icons";
+import { GithubIcon } from "@/components/icons";
 import SlackShotsLogo from "@/public/SSLOGO_NOBG.png";
 
 export const Navbar = () => {
@@ -37,7 +37,13 @@ export const Navbar = () => {
             </p>
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
+      </NavbarContent>
+
+      <NavbarContent
+        className="hidden sm:flex basis-1/5 sm:basis-full"
+        justify="end"
+      >
+        <ul className="hidden lg:flex gap-4 justify-start mr-8">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
@@ -53,28 +59,28 @@ export const Navbar = () => {
             </NavbarItem>
           ))}
         </ul>
-      </NavbarContent>
-
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
         <NavbarItem className="hidden sm:flex gap-2">
           <Link isExternal aria-label="Github" href={siteConfig.links.github}>
             <GithubIcon className="text-default-500" />
           </Link>
           <ThemeSwitch />
         </NavbarItem>
-        <NavbarItem className="hidden md:flex">
+        <NavbarItem className="hidden md:flex gap-2">
           <Button
-            isExternal
             as={Link}
-            className="text-sm font-normal text-default-600 bg-default-100"
-            href={siteConfig.links.sponsor}
-            startContent={<HeartFilledIcon className="text-danger" />}
+            className="drop-shadow-lg rounded-lg px-6 py-3 gap-1 font-semibold bg-zinc-950 text-white border border-zinc-400/40 group relative flex items-center justify-center shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] whitespace-nowrap"
+            href="/sign-in"
             variant="flat"
           >
-            Sponsor
+            Login
+          </Button>
+          <Button
+            as={Link}
+            className="drop-shadow-lg rounded-lg px-6 py-2 gap-1 text-slate-900/90 font-semibold border border-zinc-400/40 bg-white group relative flex items-center justify-center shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] whitespace-nowrap"
+            href="/sign-up"
+            variant="flat"
+          >
+            Sign Up
           </Button>
         </NavbarItem>
       </NavbarContent>
