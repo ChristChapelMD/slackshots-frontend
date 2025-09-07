@@ -6,10 +6,13 @@ import { Link as HeroLink } from "@heroui/link";
 import NextLink from "next/link";
 import Image from "next/image";
 
+import { useAuth } from "@/hooks/use-auth";
 import SlackShotsLogo from "@/public/SSLOGO_NOBG.png";
 import WaveReveal from "@/components/ui/wave-reveal";
 
 export function HeroSection() {
+  const { session, loading } = useAuth();
+
   return (
     <section className="relative mx-auto flex max-w-7xl flex-col items-center justify-center">
       <div className="px-4">
@@ -48,7 +51,7 @@ export function HeroSection() {
           <HeroLink
             as={NextLink}
             className="drop-shadow-lg w-60 rounded-lg px-6 py-2 gap-1 text-slate-900/90 font-semibold border border-zinc-400/40 bg-white group relative flex items-center justify-center shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] whitespace-nowrap"
-            href="/dashboard"
+            href={loading ? "#" : session ? "/dashboard" : "/sign-in"}
           >
             <Image
               alt="Slack Logo"
@@ -56,7 +59,7 @@ export function HeroSection() {
               src={SlackShotsLogo}
               width={30}
             />
-            Get Started
+            {loading ? "" : session ? "Go To Dashboard" : "Get Started"}
           </HeroLink>
           <HeroLink
             as={NextLink}
