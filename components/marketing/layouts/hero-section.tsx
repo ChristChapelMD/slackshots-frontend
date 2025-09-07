@@ -51,7 +51,7 @@ export function HeroSection() {
             href="/dashboard"
           >
             <Image alt="Slack Logo" height={30} src={SlackLogo} width={30} />
-            Login With Slack
+            Continue With Slack
           </HeroLink>
           <HeroLink
             as={NextLink}
