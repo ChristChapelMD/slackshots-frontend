@@ -6,7 +6,7 @@ import { Link as HeroLink } from "@heroui/link";
 import NextLink from "next/link";
 import Image from "next/image";
 
-import SlackLogo from "@/public/SLA-appIcon-desktop.png";
+import SlackShotsLogo from "@/public/SSLOGO_NOBG.png";
 import WaveReveal from "@/components/ui/wave-reveal";
 
 export function HeroSection() {
@@ -50,8 +50,13 @@ export function HeroSection() {
             className="drop-shadow-lg w-60 rounded-lg px-6 py-2 gap-1 text-slate-900/90 font-semibold border border-zinc-400/40 bg-white group relative flex items-center justify-center shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] whitespace-nowrap"
             href="/dashboard"
           >
-            <Image alt="Slack Logo" height={30} src={SlackLogo} width={30} />
-            Continue With Slack
+            <Image
+              alt="Slack Logo"
+              height={30}
+              src={SlackShotsLogo}
+              width={30}
+            />
+            Get Started
           </HeroLink>
           <HeroLink
             as={NextLink}
