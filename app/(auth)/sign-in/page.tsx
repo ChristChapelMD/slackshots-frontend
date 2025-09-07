@@ -1,16 +1,23 @@
-"use client";
-
 import Image from "next/image";
 import { Card } from "@heroui/card";
 import { Divider } from "@heroui/divider";
 import { Link as HeroLink } from "@heroui/link";
 import NextLink from "next/link";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 import SlackShotsLogo from "@/public/SSLOGO_NOBG.png";
 import SignInForm from "@/components/auth/sign-in-form";
 import { SlackAuthButton } from "@/components/auth/slack-auth-button";
+import { auth } from "@/lib/auth";
 
-export default function SignInPage() {
+export default async function SignInPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
     <Card className="w-full max-w-sm rounded-xl drop-shadow-lg p-8 gap-1 text-foreground font-semibold border border-zinc-400/25 group relative flex shadow-[inset_0_-8px_10px_#8fdfff1f] whitespace-nowrap">
       <Image
@@ -66,3 +73,4 @@ export default function SignInPage() {
     </Card>
   );
 }
+0;

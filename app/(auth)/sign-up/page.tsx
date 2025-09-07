@@ -3,12 +3,21 @@ import { Card } from "@heroui/card";
 import { Divider } from "@heroui/divider";
 import { Link as HeroLink } from "@heroui/link";
 import NextLink from "next/link";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 import SlackShotsLogo from "@/public/SSLOGO_NOBG.png";
 import SlackLogo from "@/public/SLA-appIcon-desktop.png";
 import SignUpForm from "@/components/auth/sign-up-form";
+import { auth } from "@/lib/auth";
 
-export default function SignUpPage() {
+export default async function SignUpPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (session) {
+    redirect("/dashboard");
+  }
+
   return (
     <Card className="w-full max-w-sm rounded-xl drop-shadow-lg p-8 gap-1 text-foreground font-semibold border border-zinc-400/25 group relative flex shadow-[inset_0_-8px_10px_#8fdfff1f] whitespace-nowrap">
       <Image
