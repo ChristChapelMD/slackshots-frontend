@@ -32,7 +32,7 @@ export default function SignInForm() {
     await signIn({
       email,
       password,
-      callbackURL: "/dashboard",
+      callbackURL: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
     });
   };
 
