@@ -16,4 +16,5 @@ export const auth = betterAuth({
       clientSecret: process.env.SLACK_CLIENT_SECRET as string,
     },
   },
+  trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL as string],
 });
