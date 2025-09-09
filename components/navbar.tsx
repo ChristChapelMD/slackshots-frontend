@@ -98,18 +98,44 @@ export const Navbar = async () => {
       </NavbarContent>
 
       <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                className="font-semibold text-slate-900/90 dark:text-slate-200/90"
-                href="#"
-                size="lg"
+        <div className="mx-4 mt-2 py-16 flex h-full flex-col justify-between">
+          <div className="flex flex-col gap-2">
+            {siteConfig.navMenuItems.map((item, index) => (
+              <NavbarMenuItem key={`${item}-${index}`}>
+                <Link
+                  className="font-semibold text-slate-900/90 dark:text-slate-200/90"
+                  href="#"
+                  size="lg"
+                >
+                  {item.label}
+                </Link>
+              </NavbarMenuItem>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <NavbarMenuItem className="w-full">
+              <Button
+                as={Link}
+                className="drop-shadow-lg rounded-lg px-6 py-3 gap-1 font-semibold bg-zinc-950 text-white border border-zinc-400/40 group relative flex items-center justify-center shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] whitespace-nowrap"
+                href={session ? "/dashboard" : "/sign-in"}
+                variant="flat"
               >
-                {item.label}
-              </Link>
+                Login
+              </Button>
             </NavbarMenuItem>
-          ))}
+
+            <NavbarMenuItem className="w-full">
+              <Button
+                as={Link}
+                className="drop-shadow-lg rounded-lg px-6 py-2 gap-1 text-slate-900/90 font-semibold border border-zinc-400/40 bg-white group relative flex items-center justify-center shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] whitespace-nowrap"
+                href={session ? "/dashboard" : "/sign-up"}
+                variant="flat"
+              >
+                Sign Up
+              </Button>
+            </NavbarMenuItem>
+          </div>
         </div>
       </NavbarMenu>
     </HeroUINavbar>
