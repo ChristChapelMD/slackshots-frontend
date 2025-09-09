@@ -73,4 +73,3 @@ export default async function SignInPage() {
     </Card>
   );
 }
-0;
