@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { cn } from "@/lib/utils";
 

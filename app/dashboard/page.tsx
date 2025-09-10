@@ -13,8 +13,6 @@ export const metadata: Metadata = {
 export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
 
-  console.log(session);
-
   if (!session) {
     redirect("/sign-in");
   }

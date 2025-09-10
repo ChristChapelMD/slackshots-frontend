@@ -11,10 +11,8 @@ import {
   AuthSession,
   SignInParams,
 } from "@/types/auth";
-import { useRouter } from "next/navigation";
 
 export function useAuth(): UseAuthReturn {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<AuthError | null>(null);
 
@@ -156,13 +154,6 @@ export function useAuth(): UseAuthReturn {
           rememberMe,
           fetchOptions: {
             credentials: "include",
-            onSuccess: () => {
-              console.log(
-                "✅ onSuccess called, pushing to",
-                callbackURL || "/dashboard",
-              );
-              router.push(callbackURL || "/dashboard");
-            },
           },
         });
 

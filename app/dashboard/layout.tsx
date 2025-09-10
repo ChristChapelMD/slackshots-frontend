@@ -12,16 +12,6 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const hasRefreshToken = cookieStore.has("refreshToken");
-  const hasAccessToken = cookieStore.has("accessToken");
-
-  if (process.env.NEXT_PUBLIC_NODE_ENV !== "development") {
-    if (!hasRefreshToken && !hasAccessToken) {
-      redirect("/");
-    }
-  }
-
   return (
     <div className="max-h-fit inset-0 flex items-center justify-center p-4">
       <TextureContainer className="w-[95vw] h-[95vh] flex flex-col overflow-hidden">
