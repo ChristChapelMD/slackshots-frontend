@@ -8,7 +8,6 @@ export const allowedOrigins = originConfig.allowedOrigins;
 export function middleware(request: NextRequest) {
   const origin = request.headers.get("origin");
 
-  // Handle CORS preflight requests
   if (request.method === "OPTIONS") {
     const response = new NextResponse(null, { status: 200 });
 
@@ -29,7 +28,6 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // Handle actual requests
   const response = NextResponse.next();
 
   if (origin && allowedOrigins.includes(origin)) {
