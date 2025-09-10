@@ -155,6 +155,7 @@ export function useAuth(): UseAuthReturn {
           callbackURL,
           rememberMe,
           fetchOptions: {
+            credentials: "include",
             onSuccess: () => {
               console.log(
                 "✅ onSuccess called, pushing to",
