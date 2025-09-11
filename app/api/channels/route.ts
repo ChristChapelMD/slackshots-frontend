@@ -3,8 +3,29 @@ import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 
+export async function getSlackToken(headers: Headers) {
+  const session = await auth.api.getSession({ headers: headers });
+  if (!session) {
+    throw new Error("Not signed in");
+  }
+  const result = await auth.api.getAccessToken({
+    body: {
+      providerId: "slack",
+      userId: session.user.id,
+    },
+  });
+  if (!result.accessToken) {
+    throw new Error("Slack access token not found");
+  }
+  return result.accessToken;
+}
+
 export async function GET(request: Request) {
   const user = (await auth.api.getSession({ headers: await headers() }))?.user;
+
+  const slackToken = await getSlackToken(await headers());
+
+  console.log("sAT", slackToken);
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
