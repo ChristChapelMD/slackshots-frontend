@@ -8,7 +8,6 @@ async function getSlackToken(headers: Headers) {
   if (!session) {
     throw new Error("Not signed in");
   }
-  auth.api.
   const result = await auth.api.getAccessToken({
     body: {
       providerId: "slack",
