@@ -20,4 +20,9 @@ export const auth = betterAuth({
     },
   },
   trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL as string],
+  user: {
+    additionalFields: {
+      workspaceId: { type: "string", required: false, input: false },
+    },
+  },
 });
