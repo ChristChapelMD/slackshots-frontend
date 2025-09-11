@@ -13,6 +13,25 @@ export const metadata: Metadata = {
 export default async function DashboardPage() {
   const session = await auth.api.getSession({ headers: await headers() });
 
+  async function getSlackToken(headers: Headers) {
+    const session = await auth.api.getSession({ headers: headers });
+    if (!session) {
+      throw new Error("Not signed in");
+    }
+    const result = await auth.api.getAccessToken({
+      body: {
+        providerId: "slack",
+        userId: session.user.id,
+      },
+    });
+    if (!result.accessToken) {
+      throw new Error("Slack access token not found");
+    }
+    return result.accessToken;
+  }
+
+  console.log(getSlackToken(await headers()));
+
   if (!session) {
     redirect("/sign-in");
   }
