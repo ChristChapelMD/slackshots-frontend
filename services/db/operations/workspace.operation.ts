@@ -23,9 +23,13 @@ export async function createOrUpdateWorkspace(data: WorkspaceDTO) {
   }
 }
 
-export async function getWorkspaceById(workspaceId: string) {
+export async function getWorkspaceById(
+  workspaceId: string,
+): Promise<WorkspaceDTO> {
   try {
-    const workspace = await Workspace.findOne({ workspaceId }).lean();
+    const workspace = await Workspace.findOne({
+      workspaceId,
+    }).lean<WorkspaceDTO>();
 
     if (!workspace) {
       throw new Error(`Workspace with ID ${workspaceId} not found.`);
