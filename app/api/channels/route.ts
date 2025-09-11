@@ -2,37 +2,76 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
+import { getWorkspaceById } from "@/services/db/operations/workspace.operation";
+import { getSlackChannels } from "@/services/slack/channels";
 
-async function getSlackToken(headers: Headers) {
-  const session = await auth.api.getSession({ headers: headers });
-  if (!session) {
-    throw new Error("Not signed in");
-  }
-  const result = await auth.api.getAccessToken({
-    body: {
-      providerId: "slack",
-      userId: session.user.id,
-    },
-  });
-  if (!result.accessToken) {
-    throw new Error("Slack access token not found");
-  }
-  return result.accessToken;
-}
+// async function getSlackToken(headers: Headers) {
+//   const session = await auth.api.getSession({ headers: headers });
+//   if (!session) {
+//     throw new Error("Not signed in");
+//   }
+//   const result = await auth.api.getAccessToken({
+//     body: {
+//       providerId: "slack",
+//       userId: session.user.id,
+//     },
+//   });
+//   if (!result.accessToken) {
+//     throw new Error("Slack access token not found");
+//   }
+//   return result.accessToken;
+// }
 
-export async function GET(request: Request) {
-  const user = (await auth.api.getSession({ headers: await headers() }))?.user;
-
-  const slackToken = await getSlackToken(await headers());
-
-  console.log("sAT", slackToken);
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+export async function GET() {
   try {
-    return NextResponse.json(user.id);
+    const sessionData = await auth.api.getSession({ headers: await headers() });
+    const user = sessionData?.user;
+
+    if (!user) {
+      console.log("[Channels API] Unauthorized request, no user session found");
+
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    console.log("[Channels API] User session found:", user);
+
+    const workspaceId = user.workspaceId;
+
+    if (!workspaceId) {
+      console.log(
+        "[Channels API] No workspaceId associated with user:",
+        user.id,
+      );
+
+      return NextResponse.json(
+        { error: "No workspace linked to user" },
+        { status: 400 },
+      );
+    }
+
+    const workspace = await getWorkspaceById(workspaceId);
+
+    if (!workspace) {
+      console.log("[Channels API] Workspace not found:", workspaceId);
+
+      return NextResponse.json(
+        { error: "Workspace not found" },
+        { status: 404 },
+      );
+    }
+
+    console.log("[Channels API] Workspace found:", workspace);
+
+    const channels = await getSlackChannels(workspace.botToken);
+
+    console.log("Bot token: ", workspace.botToken);
+
+    console.log("[Channels API] Channels fetched:", channels);
+
+    return NextResponse.json({ channels });
   } catch (error) {
+    console.error("[Channels API] Error:", error);
+
     return NextResponse.json(
       { message: (error as Error).message },
       { status: 500 },
