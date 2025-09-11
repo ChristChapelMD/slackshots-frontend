@@ -8,15 +8,15 @@ export enum FileStatus {
 
 export interface IFile extends Document {
   fileName: string;
-  blobURL: string;
+  blobUrl: string;
   fileSize: number;
-  uploadSessionID: string;
-  userID: mongoose.Types.ObjectId;
-  workspaceID: mongoose.Types.ObjectId;
+  uploadSessionId: string;
+  userId: mongoose.Types.ObjectId;
+  workspaceId: mongoose.Types.ObjectId;
   fileType: string;
   status: FileStatus;
-  slackFileURL?: string;
-  slackFileID?: string;
+  slackFileUrl?: string;
+  slackFileId?: string;
   errorMessage?: string;
   metadata?: Record<string, any>;
 }
@@ -24,16 +24,16 @@ export interface IFile extends Document {
 const FileSchema = new Schema<IFile>(
   {
     fileName: { type: String, required: true },
-    blobURL: { type: String, required: true },
+    blobUrl: { type: String, required: true },
     fileSize: { type: Number, required: true },
-    uploadSessionID: { type: String, required: true, index: true },
-    userID: {
+    uploadSessionId: { type: String, required: true, index: true },
+    userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
       index: true,
     },
-    workspaceID: {
+    workspaceId: {
       type: Schema.Types.ObjectId,
       ref: "Workspace",
       required: true,
@@ -46,8 +46,8 @@ const FileSchema = new Schema<IFile>(
       default: FileStatus.PENDING,
       required: true,
     },
-    slackFileURL: { type: String },
-    slackFileID: { type: String },
+    slackFileUrl: { type: String },
+    slackFileId: { type: String },
     errorMessage: { type: String },
     metadata: { type: Schema.Types.Mixed },
   },
