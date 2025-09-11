@@ -10,25 +10,11 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardPage() {
-  const reqHeaders = await headers();
-  const session = await auth.api.getSession({ headers: reqHeaders });
+  const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session) {
     redirect("/sign-in");
   }
 
-  const result = await auth.api.getAccessToken({
-    body: {
-      providerId: "slack",
-      userId: session.user.id,
-    },
-  });
-
-  console.log("Slack access token:", result.accessToken);
-
-  return (
-    <>
-      {result.accessToken} <MainContentContainer />
-    </>
-  );
+  return <MainContentContainer />;
 }
