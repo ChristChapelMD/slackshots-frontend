@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
-import { WebClient } from "@slack/web-api";
 
 import { auth } from "@/lib/auth";
 import { getWorkspaceById } from "@/services/db/operations/workspace.operation";
+import { getSlackChannels } from "@/services/slack/channels";
 
 // async function getSlackToken(headers: Headers) {
 //   const session = await auth.api.getSession({ headers: headers });
@@ -62,16 +62,13 @@ export async function GET() {
 
     console.log("[Channels API] Workspace found:", workspace);
 
-    const slack = new WebClient(workspace.botToken);
+    const channels = await getSlackChannels(workspace.botToken);
 
     console.log("Bot token: ", workspace.botToken);
 
-    // 4. Call Slack API to fetch channels
-    const result = await slack.conversations.list();
+    console.log("[Channels API] Channels fetched:", channels);
 
-    console.log("[Channels API] Slack API response:", result);
-
-    return NextResponse.json({ channels: result.channels });
+    return NextResponse.json({ channels });
   } catch (error) {
     console.error("[Channels API] Error:", error);
 
