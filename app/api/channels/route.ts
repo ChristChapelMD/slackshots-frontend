@@ -3,11 +3,12 @@ import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 
-export async function getSlackToken(headers: Headers) {
+async function getSlackToken(headers: Headers) {
   const session = await auth.api.getSession({ headers: headers });
   if (!session) {
     throw new Error("Not signed in");
   }
+  auth.api.
   const result = await auth.api.getAccessToken({
     body: {
       providerId: "slack",
