@@ -27,6 +27,10 @@ export async function GET() {
     const sessionData = await auth.api.getSession({ headers: await headers() });
     const user = sessionData?.user;
 
+    console.log(
+      await auth.api.getSession({ headers: await headers(), asResponse: true }),
+    );
+
     if (!user) {
       console.log("[Channels API] Unauthorized request, no user session found");
 
