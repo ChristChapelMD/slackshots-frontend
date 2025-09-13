@@ -22,7 +22,6 @@ const UserWorkspaceSchema = new Schema<IUserWorkspace>(
   { timestamps: true },
 );
 
-// Prevent duplicate user-workspace pairs
 UserWorkspaceSchema.index({ workspaceId: 1, userId: 1 }, { unique: true });
 
 export const UserWorkspace =

@@ -22,9 +22,4 @@ export const auth = betterAuth({
       workspaceId: { type: "string", required: false, input: false },
     },
   },
-  databaseHooks: {
-    user: {
-      // look into tomorrow lol
-    },
-  },
 });
