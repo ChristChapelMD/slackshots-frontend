@@ -11,7 +11,7 @@ import { GridView } from "@/components/dashboard/content/grid/grid-view";
 import { cn } from "@/lib/utils";
 import { BaseDrawer } from "@/components/drawers/dashboard/base-drawer";
 import { useWorkspace } from "@/hooks/use-workspace";
-import SlackLogo from "@/assets/slack-logo.png";
+import SlackLogo from "@/public/SLA-appIcon-desktop.png";
 import { useAuth } from "@/hooks/use-auth";
 
 export function MainContentContainer() {
