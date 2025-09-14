@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useCallback, useRef } from "react";
+import { Button } from "@heroui/button";
+import Image from "next/image";
 
 import { useFiles } from "@/hooks/use-files";
 import { useUIStore } from "@/stores/ui-store";
@@ -8,12 +10,18 @@ import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { GridView } from "@/components/dashboard/content/grid/grid-view";
 import { cn } from "@/lib/utils";
 import { BaseDrawer } from "@/components/drawers/dashboard/base-drawer";
+import { useWorkspace } from "@/hooks/use-workspace";
+import SlackLogo from "@/assets/slack-logo.png";
+import { useAuth } from "@/hooks/use-auth";
 
 export function MainContentContainer() {
   const { loadFiles, isLoading, hasMore } = useFiles();
   const viewMode = useUIStore((state) => state.viewMode);
 
   const mainContainerRef = useRef<HTMLDivElement>(null);
+
+  const { session } = useAuth();
+  const { addWorkspace, loading: workspaceLoading } = useWorkspace();
 
   useEffect(() => {
     loadFiles(false);
@@ -49,11 +57,35 @@ export function MainContentContainer() {
           viewMode === "grid" ? "bg-zinc-100 dark:bg-zinc-800 p-4" : "p-6",
         )}
       >
-        {viewMode === "grid" && (
+        {!session?.user?.workspaceId ? (
+          <div className="flex flex-col items-center justify-center h-full gap-6 p-8 rounded-2xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-md">
+            <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
+              Connect a Workspace
+            </h2>
+            <p className="text-center text-slate-600 dark:text-slate-400 max-w-md">
+              You don’t have a workspace connected yet. Click below to add your
+              Slack workspace and start using the app.
+            </p>
+            <Button
+              className="flex items-center justify-center gap-2 w-full max-w-xs rounded-lg px-4 py-3 text-slate-900 font-medium border border-zinc-300 bg-white shadow-sm hover:shadow-md transition-shadow"
+              isLoading={workspaceLoading}
+              onPress={() => addWorkspace()}
+            >
+              <Image alt="Slack Logo" height={24} src={SlackLogo} width={24} />
+              {workspaceLoading
+                ? "...Authenticating with Slack"
+                : "Continue with Slack"}
+            </Button>
+          </div>
+        ) : (
           <>
-            <GridView />
-            <div className="h-32 boder-8 border-red-900 z-50" />
-            <div className="boder-8 border-red-900" data-sentinel="true" />
+            {viewMode === "grid" && (
+              <>
+                <GridView />
+                <div className="h-32 boder-8 border-red-900 z-50" />
+                <div className="boder-8 border-red-900" data-sentinel="true" />
+              </>
+            )}
           </>
         )}
         <BaseDrawer containerRef={mainContainerRef} />
