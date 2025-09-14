@@ -13,8 +13,6 @@ export async function POST() {
       },
     });
 
-    console.log(Object(process.env));
-
     return NextResponse.json({ url });
   } catch (err) {
     console.error(err);
