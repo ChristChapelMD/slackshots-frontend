@@ -5,29 +5,6 @@ import { genericOAuth } from "better-auth/plugins";
 
 import { slackScopesConfig } from "@/config/scopes";
 
-export interface SlackOAuthResponse {
-  ok: boolean;
-  access_token: string;
-  token_type: "bot" | string;
-  scope: string;
-  bot_user_id: string;
-  app_id: string;
-  team: {
-    name: string;
-    id: string;
-  };
-  enterprise?: {
-    name: string;
-    id: string;
-  };
-  authed_user: {
-    id: string;
-    scope: string;
-    access_token: string;
-    token_type: "user" | string;
-  };
-}
-
 const client = new MongoClient(process.env.MONGO_URI as string);
 const db = client.db(process.env.MONGO_DB_NAME);
 
