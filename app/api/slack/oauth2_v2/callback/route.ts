@@ -11,6 +11,7 @@ export async function GET(req: Request) {
     process.env.SLACK_OAUTH_2_V2_REDIRECT_URI,
   );
 
+  console.log(Object.keys(process.env));
   if (!code) {
     throw new Error("Missing code from Slack");
   }
@@ -50,10 +51,6 @@ export async function GET(req: Request) {
 
     return NextResponse.redirect(new URL("/dashboard", req.url));
   } catch (err) {
-    console.log(
-      "Redirect URI being used (called from oaut hroute):",
-      process.env.SLACK_OAUTH_2_V2_REDIRECT_URI,
-    );
     console.error("Slack OAuth error:", err);
 
     return NextResponse.redirect(new URL("/error", req.url));
