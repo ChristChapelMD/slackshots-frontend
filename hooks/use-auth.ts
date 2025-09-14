@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useRef, useEffect } from "react";
 
-import { slackScopesConfig } from "@/config/scopes";
 import { authClient } from "@/lib/auth/client";
 import {
   UseAuthReturn,
@@ -46,7 +45,6 @@ export function useAuth(): UseAuthReturn {
     try {
       const { data, error } = await authClient.signIn.social({
         provider: "slack",
-        scopes: slackScopesConfig,
       });
 
       if (error) {
