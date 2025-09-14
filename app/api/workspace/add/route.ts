@@ -13,8 +13,6 @@ export async function POST() {
       },
     });
 
-    console.log("Url in prod: ", url);
-
     return NextResponse.json({ url });
   } catch (err) {
     console.error(err);
