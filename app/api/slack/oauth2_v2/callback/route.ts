@@ -7,6 +7,11 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const code = url.searchParams.get("code");
 
+    console.log(
+      "Redirect URI being used (called from oaut hroute):",
+      process.env.SLACK_OAUTH_2_V2_REDIRECT_URI,
+    );
+
     if (!code) {
       throw new Error("Missing code from Slack");
     }
