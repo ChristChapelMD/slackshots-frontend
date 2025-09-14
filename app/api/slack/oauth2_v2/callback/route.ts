@@ -3,19 +3,19 @@ import { NextResponse } from "next/server";
 import { SlackOAuthResponse } from "@/types/slack";
 
 export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const code = url.searchParams.get("code");
+
+  console.log(
+    "Redirect URI being used (called from oaut hroute):",
+    process.env.SLACK_OAUTH_2_V2_REDIRECT_URI,
+  );
+
+  if (!code) {
+    throw new Error("Missing code from Slack");
+  }
+
   try {
-    const url = new URL(req.url);
-    const code = url.searchParams.get("code");
-
-    console.log(
-      "Redirect URI being used (called from oaut hroute):",
-      process.env.SLACK_OAUTH_2_V2_REDIRECT_URI,
-    );
-
-    if (!code) {
-      throw new Error("Missing code from Slack");
-    }
-
     const slackOauthResponse = await fetch(
       "https://slack.com/api/oauth.v2.access",
       {
@@ -50,6 +50,10 @@ export async function GET(req: Request) {
 
     return NextResponse.redirect(new URL("/dashboard", req.url));
   } catch (err) {
+    console.log(
+      "Redirect URI being used (called from oaut hroute):",
+      process.env.SLACK_OAUTH_2_V2_REDIRECT_URI,
+    );
     console.error("Slack OAuth error:", err);
 
     return NextResponse.redirect(new URL("/error", req.url));
