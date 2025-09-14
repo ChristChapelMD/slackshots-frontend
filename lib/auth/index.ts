@@ -32,7 +32,7 @@ export const auth = betterAuth({
           providerId: "slack_oauth2_v2",
           clientId: process.env.SLACK_CLIENT_ID as string,
           clientSecret: process.env.SLACK_CLIENT_SECRET as string,
-          redirectURI: process.env.SLACK_OUTH_2_V2_REDIRECT_URI as string,
+          redirectURI: process.env.SLACK_OAUTH2_V2_REDIRECT_URI as string,
           authorizationUrl: "https://slack.com/oauth/v2/authorize",
           tokenUrl: "https://slack.com/api/oauth.v2.access",
           responseType: "code",

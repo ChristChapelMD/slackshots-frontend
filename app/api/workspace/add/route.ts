@@ -13,7 +13,7 @@ export async function POST() {
       },
     });
 
-    console.log("Url in prod: ", url);
+    console.log(Object(process.env));
 
     return NextResponse.json({ url });
   } catch (err) {
