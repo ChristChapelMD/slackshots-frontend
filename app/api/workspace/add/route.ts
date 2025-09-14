@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 
 export async function POST() {
   try {
-    await auth.api.signInWithOAuth2({
+    const url = await auth.api.signInWithOAuth2({
       body: {
         providerId: "slack_oauth2_v2",
         callbackURL: "/dashboard",
@@ -13,7 +13,7 @@ export async function POST() {
       },
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ url });
   } catch (err) {
     console.error(err);
 
