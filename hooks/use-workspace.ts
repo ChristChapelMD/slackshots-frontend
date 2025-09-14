@@ -13,7 +13,11 @@ export function useWorkspace() {
     try {
       const response = await fetch("/api/workspace/add", { method: "POST" });
 
-      if (!response.ok) throw new Error("Failed to start OAuth");
+      const data = await response.json();
+
+      if (!response.ok || !data.url) throw new Error("Failed to start OAuth");
+
+      window.location.href = data.url;
 
       return { success: true };
     } catch (err: any) {
