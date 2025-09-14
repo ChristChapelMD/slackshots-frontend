@@ -1,24 +1,17 @@
 import { NextResponse } from "next/server";
 
 import { auth } from "@/lib/auth";
+import { SlackOAuthResponse } from "@/types/slack";
 
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
 
-    const result = await auth.api.oAuth2Callback({
+    const result = (await auth.api.oAuth2Callback({
       method: "GET",
-      query: {
-        code: url.searchParams.get("code") ?? undefined,
-        state: url.searchParams.get("state") ?? undefined,
-        error: url.searchParams.get("error") ?? undefined,
-        error_description:
-          url.searchParams.get("error_description") ?? undefined,
-      },
-      params: {
-        providerId: "slack_oauth2_v2",
-      },
-    });
+      query: Object.fromEntries(url.searchParams),
+      params: { providerId: "slack_oauth2_v2" },
+    })) as unknown as SlackOAuthResponse;
 
     if (!result) {
       throw new Error("Slack provider account missing");
@@ -31,6 +24,7 @@ export async function GET(req: Request) {
     console.log("Slack workspace connected:", {
       workspaceId,
       workspaceName,
+      botToken,
     });
 
     // DB Capture
