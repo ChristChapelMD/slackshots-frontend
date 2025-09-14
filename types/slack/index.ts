@@ -1,7 +1,7 @@
 export type SlackOAuthSuccessResponse = {
   ok: true;
   access_token: string;
-  token_type: "bot";
+  token_type: "bot" | string;
   scope: string;
   bot_user_id: string;
   app_id: string;
@@ -17,7 +17,7 @@ export type SlackOAuthSuccessResponse = {
     id: string;
     scope: string;
     access_token: string;
-    token_type: string;
+    token_type: "user" | string;
   };
 };
 
