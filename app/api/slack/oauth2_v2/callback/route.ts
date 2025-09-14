@@ -1,27 +1,41 @@
 import { NextResponse } from "next/server";
 
-import { auth } from "@/lib/auth";
 import { SlackOAuthResponse } from "@/types/slack";
 
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
+    const code = url.searchParams.get("code");
 
-    const result = (await auth.api.oAuth2Callback({
-      method: "GET",
-      query: Object.fromEntries(url.searchParams),
-      params: { providerId: "slack_oauth2_v2" },
-    })) as unknown as SlackOAuthResponse;
-
-    if (!result) {
-      throw new Error("Slack provider account missing");
+    if (!code) {
+      throw new Error("Missing code from Slack");
     }
 
-    const workspaceId = result.team?.id;
-    const workspaceName = result.team?.name;
-    const botToken = result.access_token;
+    const slackOauthResponse = await fetch(
+      "https://slack.com/api/oauth.v2.access",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          client_id: process.env.SLACK_CLIENT_ID!,
+          client_secret: process.env.SLACK_CLIENT_SECRET!,
+          code,
+          redirect_uri: process.env.SLACK_OAUTH_2_V2_REDIRECT_URI!,
+        }),
+      },
+    );
 
-    console.log("Slack workspace connected:", {
+    const data: SlackOAuthResponse = await slackOauthResponse.json();
+
+    if (!data.ok) {
+      throw new Error(data.error || "Slack OAuth exchange failed");
+    }
+
+    const workspaceId = data.team.id;
+    const workspaceName = data.team.name;
+    const botToken = data.access_token;
+
+    console.log("Workspace connected:", {
       workspaceId,
       workspaceName,
       botToken,
