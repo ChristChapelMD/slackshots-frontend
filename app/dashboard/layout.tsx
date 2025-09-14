@@ -1,6 +1,4 @@
 import "@/styles/globals.css";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 import { Header } from "@/components/dashboard/header/header";
 import { Toolbar } from "@/components/dashboard/toolbar/toolbar";
