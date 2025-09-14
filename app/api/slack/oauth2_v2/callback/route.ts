@@ -26,7 +26,7 @@ export async function GET(req: Request) {
           client_id: process.env.SLACK_CLIENT_ID!,
           client_secret: process.env.SLACK_CLIENT_SECRET!,
           code,
-          redirect_uri: process.env.SLACK_OAUTH_2_V2_REDIRECT_URI!,
+          redirect_uri: process.env.SLACK_OAUTH2_V2_REDIRECT_URI!,
         }),
       },
     );
