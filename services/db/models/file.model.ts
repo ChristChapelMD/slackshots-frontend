@@ -6,7 +6,7 @@ export enum FileRecordStatus {
   FAILED = "FAILED",
 }
 
-interface IFileRecord extends Document {
+interface FileRecordDTO {
   fileName: string;
   blobUrl: string;
   fileSize: number;
@@ -21,10 +21,7 @@ interface IFileRecord extends Document {
   metadata?: Record<string, any>;
 }
 
-export type FileRecordDTO = Omit<
-  IFileRecord,
-  "_id" | "createdAt" | "updatedAt"
->;
+interface IFileRecord extends FileRecordDTO, Document {}
 
 const FileRecordSchema = new Schema<IFileRecord>(
   {

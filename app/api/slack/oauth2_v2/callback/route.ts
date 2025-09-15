@@ -3,7 +3,7 @@ import { SlackOAuthResponse } from "@/types/slack";
 import { createOrUpdateWorkspace } from "@/services/db/operations/workspace.operation";
 import { auth } from "@/lib/auth";
 
-export async function GET(req: Request) {
+export async function GET(req: Request, res: Response) {
   const url = new URL(req.url);
   const code = url.searchParams.get("code");
 
@@ -41,16 +41,16 @@ export async function GET(req: Request) {
     const enterpriseName = data.enterprise?.name;
 
     const workspace = await createOrUpdateWorkspace({
-      workspaceId,
-      name: workspaceName,
-      botToken,
-      botUserId,
-      scope,
+      workspaceId: data.team.id,
+      workspaceName: data.team.name,
+      botToken: data.access_token,
+      botUserId: data.bot_user_id,
+      scope: data.scope,
+      enterpriseId: data.enterprise?.id
+        enterpriseName: data.enterprise?.name
     });
 
-    const session = await auth.api.getSession({
-      headers: req.headers,
-    });
+
 
     // DB Capture
 
