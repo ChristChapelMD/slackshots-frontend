@@ -10,13 +10,15 @@ export interface UserWorkspaceDTO {
   role: RoleEnum;
 }
 
-export async function createUserWorkspaceRelation(
-  data: UserWorkspaceDTO,
+export async function createOrUpdateUserWorkspaceRelation(
+  userId: string,
+  workspaceId: string,
+  role: RoleEnum = "member",
 ): Promise<UserWorkspaceDTO | null> {
   try {
     const userWorkspace = await UserWorkspace.findOneAndUpdate(
-      { workspaceId: data.workspaceId, userId: data.userId },
-      { $set: data },
+      { workspaceId, userId },
+      { $set: { workspaceId, userId, role } },
       { new: true, upsert: true },
     ).lean<UserWorkspaceDTO>();
 
