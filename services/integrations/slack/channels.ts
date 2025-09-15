@@ -1,6 +1,6 @@
 import { createSlackClient } from "./client";
 
-export async function getSlackChannels(accessToken: string) {
+export async function getChannels(accessToken: string) {
   const client = createSlackClient(accessToken);
 
   try {
@@ -19,7 +19,7 @@ export async function getSlackChannels(accessToken: string) {
   }
 }
 
-export async function joinSlackChannel(accessToken: string, channelId: string) {
+export async function joinChannel(accessToken: string, channelId: string) {
   const client = createSlackClient(accessToken);
 
   try {
