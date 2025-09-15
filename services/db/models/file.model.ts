@@ -6,7 +6,7 @@ export enum FileRecordStatus {
   FAILED = "FAILED",
 }
 
-interface FileRecordDTO {
+export interface FileRecordDTO {
   fileName: string;
   blobUrl: string;
   fileSize: number;
