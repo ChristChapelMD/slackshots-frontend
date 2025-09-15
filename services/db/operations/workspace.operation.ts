@@ -1,12 +1,4 @@
-import { Workspace } from "../models/workspace.model";
-
-export interface WorkspaceDTO {
-  workspaceId: string;
-  name: string;
-  botToken: string;
-  botUserId: string;
-  scope: string;
-}
+import { Workspace, WorkspaceDTO } from "../models/workspace.model";
 
 export async function createOrUpdateWorkspace(
   data: WorkspaceDTO,

@@ -1,14 +1,7 @@
-import { UserWorkspace } from "../models/userworkspace.model";
-
-import { WorkspaceDTO } from "./workspace.operation";
+import { UserWorkspace, UserWorkspaceDTO } from "../models/userworkspace.model";
+import { WorkspaceDTO } from "../models/workspace.model";
 
 type RoleEnum = "member" | "owner";
-
-export interface UserWorkspaceDTO {
-  workspaceId: string;
-  userId: string;
-  role: RoleEnum;
-}
 
 export async function createOrUpdateUserWorkspaceRelation(
   userId: string,
