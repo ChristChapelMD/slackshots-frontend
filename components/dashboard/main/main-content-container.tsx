@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { BaseDrawer } from "@/components/drawers/dashboard/base-drawer";
 import { useWorkspace } from "@/hooks/use-workspace";
 import SlackLogo from "@/public/SLA-appIcon-desktop.png";
-import { useAuth } from "@/hooks/use-auth";
 
 export function MainContentContainer() {
   const { loadFiles, isLoading, hasMore } = useFiles();
@@ -62,7 +61,7 @@ export function MainContentContainer() {
           viewMode === "grid" ? "bg-zinc-100 dark:bg-zinc-800 p-4" : "p-6",
         )}
       >
-        {currentWorkspace ? (
+        {!currentWorkspace ? (
           <div className="flex flex-col items-center justify-center h-full gap-6 p-8 rounded-2xl border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-md">
             <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
               Connect a Workspace
