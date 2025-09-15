@@ -1,5 +1,8 @@
 import { Workspace, WorkspaceDTO } from "../models/workspace.model";
 
+import dbConnect from "@/services/db/connection";
+dbConnect();
+
 export async function createOrUpdateWorkspace(
   data: WorkspaceDTO,
 ): Promise<WorkspaceDTO | null> {

@@ -1,6 +1,9 @@
 import { UserWorkspace, UserWorkspaceDTO } from "../models/userworkspace.model";
 import { WorkspaceDTO } from "../models/workspace.model";
 
+import dbConnect from "@/services/db/connection";
+dbConnect();
+
 type RoleEnum = "member" | "owner";
 
 export async function createOrUpdateUserWorkspaceRelation(
