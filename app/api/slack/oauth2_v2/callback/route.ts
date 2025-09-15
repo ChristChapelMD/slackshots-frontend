@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-
 import { SlackOAuthResponse } from "@/types/slack";
+import { createOrUpdateWorkspace } from "@/services/db/operations/workspace.operation";
+import { auth } from "@/lib/auth";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -34,6 +35,22 @@ export async function GET(req: Request) {
     const workspaceId = data.team.id;
     const workspaceName = data.team.name;
     const botToken = data.access_token;
+    const botUserId = data.bot_user_id;
+    const scope = data.scope;
+    const enterpriseId = data.enterprise?.id;
+    const enterpriseName = data.enterprise?.name;
+
+    const workspace = await createOrUpdateWorkspace({
+      workspaceId,
+      name: workspaceName,
+      botToken,
+      botUserId,
+      scope,
+    });
+
+    const session = await auth.api.getSession({
+      headers: req.headers,
+    });
 
     // DB Capture
 
