@@ -34,7 +34,6 @@ export async function GET() {
       );
     }
 
-    // ✅ Fetch Slack channels using bot token
     const channels = await getSlackChannels(workspace.botToken);
 
     return NextResponse.json({ channels });
