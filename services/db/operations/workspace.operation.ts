@@ -1,20 +1,14 @@
-import { Workspace } from "../models/workspace.model";
+import { Workspace, WorkspaceDTO } from "../models/workspace.model";
 
-export interface WorkspaceDTO {
-  workspaceId: string;
-  name: string;
-  botToken: string;
-  botUserId: string;
-  scope: string;
-}
-
-export async function createOrUpdateWorkspace(data: WorkspaceDTO) {
+export async function createOrUpdateWorkspace(
+  data: WorkspaceDTO,
+): Promise<WorkspaceDTO | null> {
   try {
     const workspace = await Workspace.findOneAndUpdate(
       { workspaceId: data.workspaceId },
       { $set: data },
       { new: true, upsert: true },
-    ).lean();
+    ).lean<WorkspaceDTO>();
 
     return workspace;
   } catch (error) {
@@ -42,9 +36,9 @@ export async function getWorkspaceById(
   }
 }
 
-export async function listAllWorkspaces() {
+export async function listAllWorkspaces(): Promise<Array<WorkspaceDTO | null>> {
   try {
-    return await Workspace.find({}).lean();
+    return await Workspace.find({}).lean<WorkspaceDTO[]>();
   } catch (error) {
     console.error("Failed to list workspaces:", error);
     throw new Error("Workspace listing failed");

@@ -1,17 +1,6 @@
 import mongoose from "mongoose";
 
-import { File, IFile, FileStatus } from "../models/file.model";
-
-export type FileRecordData = Pick<
-  IFile,
-  | "fileName"
-  | "blobUrl"
-  | "fileSize"
-  | "uploadSessionId"
-  | "userId"
-  | "workspaceId"
-  | "fileType"
-> & {};
+import { File, FileRecordStatus, FileRecordDTO } from "../models/file.model";
 
 export type FileUpdateDetails = {
   slackFileId?: string;
@@ -21,10 +10,10 @@ export type FileUpdateDetails = {
   moderationFlag?: boolean;
 };
 
-export async function createFileRecord(data: FileRecordData) {
+export async function createFileRecord(data: FileRecordDTO) {
   const file = new File({
     ...data,
-    status: FileStatus.PENDING,
+    status: FileRecordStatus.PENDING,
   });
 
   return await file.save();
@@ -32,7 +21,7 @@ export async function createFileRecord(data: FileRecordData) {
 
 export async function updateFileRecord(
   fileId: mongoose.Types.ObjectId,
-  status: FileStatus,
+  status: FileRecordStatus,
   details: FileUpdateDetails = {},
 ) {
   return await File.findByIdAndUpdate(
@@ -43,13 +32,19 @@ export async function updateFileRecord(
 }
 
 export async function getPendingFilesBySession(uploadSessionID: string) {
-  return await File.find({ uploadSessionID, status: FileStatus.PENDING }).sort({
+  return await File.find({
+    uploadSessionID,
+    status: FileRecordStatus.PENDING,
+  }).sort({
     createdAt: 1,
   });
 }
 
 export async function getFailedFilesBySession(uploadSessionID: string) {
-  return await File.find({ uploadSessionID, status: FileStatus.FAILED }).sort({
+  return await File.find({
+    uploadSessionID,
+    status: FileRecordStatus.FAILED,
+  }).sort({
     createdAt: 1,
   });
 }
@@ -59,7 +54,7 @@ export async function getFilesForUser(
   page: number = 1,
   limit: number = 16,
 ) {
-  return await File.find({ userId, status: FileStatus.UPLOADED_TO_SLACK })
+  return await File.find({ userId, status: FileRecordStatus.UPLOADED_TO_SLACK })
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
     .limit(limit);
@@ -70,7 +65,10 @@ export async function getFilesForWorkspace(
   page: number = 1,
   limit: number = 16,
 ) {
-  return await File.find({ workspaceId, status: FileStatus.UPLOADED_TO_SLACK })
+  return await File.find({
+    workspaceId,
+    status: FileRecordStatus.UPLOADED_TO_SLACK,
+  })
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
     .limit(limit);
@@ -80,14 +78,14 @@ export async function markFileAsFailed(
   fileId: mongoose.Types.ObjectId,
   errorMessage?: string,
 ) {
-  return await updateFileRecord(fileId, FileStatus.FAILED, {
+  return await updateFileRecord(fileId, FileRecordStatus.FAILED, {
     errorMessage,
   });
 }
 
 export async function bulkUpdateFilesStatus(
   fileIds: mongoose.Types.ObjectId[],
-  status: FileStatus,
+  status: FileRecordStatus,
   details: FileUpdateDetails = {},
 ) {
   return await File.updateMany(

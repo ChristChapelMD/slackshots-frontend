@@ -1,12 +1,12 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export enum FileStatus {
+export enum FileRecordStatus {
   PENDING = "PENDING",
   UPLOADED_TO_SLACK = "UPLOADED_TO_SLACK",
   FAILED = "FAILED",
 }
 
-export interface IFile extends Document {
+export interface FileRecordDTO {
   fileName: string;
   blobUrl: string;
   fileSize: number;
@@ -14,14 +14,16 @@ export interface IFile extends Document {
   userId: mongoose.Types.ObjectId;
   workspaceId: mongoose.Types.ObjectId;
   fileType: string;
-  status: FileStatus;
+  status: FileRecordStatus;
   slackFileUrl?: string;
   slackFileId?: string;
   errorMessage?: string;
   metadata?: Record<string, any>;
 }
 
-const FileSchema = new Schema<IFile>(
+interface IFileRecord extends FileRecordDTO, Document {}
+
+const FileRecordSchema = new Schema<IFileRecord>(
   {
     fileName: { type: String, required: true },
     blobUrl: { type: String, required: true },
@@ -42,8 +44,8 @@ const FileSchema = new Schema<IFile>(
     fileType: { type: String, required: true },
     status: {
       type: String,
-      enum: Object.values(FileStatus),
-      default: FileStatus.PENDING,
+      enum: Object.values(FileRecordStatus),
+      default: FileRecordStatus.PENDING,
       required: true,
     },
     slackFileUrl: { type: String },
@@ -55,4 +57,4 @@ const FileSchema = new Schema<IFile>(
 );
 
 export const File =
-  mongoose.models.File || mongoose.model<IFile>("File", FileSchema);
+  mongoose.models.File || mongoose.model<IFileRecord>("File", FileRecordSchema);

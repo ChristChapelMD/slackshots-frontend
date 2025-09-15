@@ -2,11 +2,13 @@ import mongoose, { Schema, Document } from "mongoose";
 
 type RoleEnum = "owner" | "member";
 
-export interface IUserWorkspace extends Document {
+export interface UserWorkspaceDTO {
   workspaceId: string;
   userId: string;
   role: RoleEnum;
 }
+
+interface IUserWorkspace extends UserWorkspaceDTO, Document {}
 
 const UserWorkspaceSchema = new Schema<IUserWorkspace>(
   {

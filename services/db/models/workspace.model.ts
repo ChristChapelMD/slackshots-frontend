@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-export interface IWorkspace extends Document {
+export interface WorkspaceDTO {
   workspaceId: string;
   workspaceName: string;
   botToken: string;
@@ -9,6 +9,8 @@ export interface IWorkspace extends Document {
   enterpriseId?: string;
   enterpriseName?: string;
 }
+
+interface IWorkspace extends WorkspaceDTO, Document {}
 
 const WorkspaceSchema = new Schema<IWorkspace>(
   {
