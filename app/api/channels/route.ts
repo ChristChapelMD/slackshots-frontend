@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
 import { getWorkspaceById } from "@/services/db/operations/workspace.operation";
-import { getSlackChannels } from "@/services/slack/channels";
+import { slack } from "@/services/integrations";
 
 export async function GET() {
   try {
@@ -34,7 +34,7 @@ export async function GET() {
       );
     }
 
-    const channels = await getSlackChannels(workspace.botToken);
+    const channels = await slack.channels.getChannels(workspace.botToken);
 
     return NextResponse.json({ channels });
   } catch (error) {

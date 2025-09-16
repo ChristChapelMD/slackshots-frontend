@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import { useUploadFormStore } from "./upload-form-store";
 
-import { services } from "@/services/api";
+import { client } from "@/services/client";
 
 interface UploadProcessState {
   isUploading: boolean;
@@ -33,7 +33,7 @@ export const useUploadProcessStore = create<UploadProcessState>((set) => ({
     });
 
     try {
-      await services.upload.uploadFiles({
+      await client.upload.uploadFiles({
         files: formState.files,
         channel: formState.channel,
         comment: formState.comment,

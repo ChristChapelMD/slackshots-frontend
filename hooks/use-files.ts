@@ -4,7 +4,7 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { useCallback, useState, useEffect, useRef } from "react";
 
 import { useFileStore } from "@/stores/file-store";
-import { services } from "@/services/api";
+import { client } from "@/services/client";
 import { useUploadProcessStore } from "@/stores/upload-process-store";
 
 const STALE_TIME = 1000 * 60 * 5;
@@ -55,7 +55,7 @@ export function useFiles(
       },
     ],
     queryFn: async () => {
-      return services.file.fetchFiles(queryState.page, pageSize, fileTypes);
+      return client.files.fetchFiles(queryState.page, pageSize, fileTypes);
     },
     enabled: queryState.enabled,
     staleTime: recentUpload ? POST_UPLOAD_STALE_TIME : STALE_TIME,

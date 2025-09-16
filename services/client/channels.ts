@@ -1,0 +1,22 @@
+import { Channel, ChannelOption } from "@/types/service-types/channel-service";
+
+export async function fetchChannels(): Promise<ChannelOption[]> {
+  const response = await fetch("/api/channels", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+
+    throw new Error(data.message || "Failed to fetch channels");
+  }
+
+  const data: Channel[] = await response.json();
+
+  return data.map((channel) => ({
+    value: channel.id,
+    label: channel.name,
+    isMember: channel.isMember,
+  }));
+}

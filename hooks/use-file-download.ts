@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useToastMutation } from "@/hooks/use-toast-mutation";
 import { useSelectionStore } from "@/stores/selection-store";
-import { services } from "@/services/api";
+import { client } from "@/services/client";
 
 export function useFileDownload() {
   const [downloadingFile, setDownloadingFile] = useState<string | null>(null);
@@ -19,12 +19,12 @@ export function useFileDownload() {
         }
 
         if (selectedFiles.length === 1) {
-          await services.file.downloadSingleFile(selectedFiles[0]);
+          await client.files.downloadSingleFile(selectedFiles[0]);
 
           return { count: 1 };
         }
 
-        await services.file.downloadMultipleFiles(selectedFiles);
+        await client.files.downloadMultipleFiles(selectedFiles);
 
         return { count: selectedFiles.length };
       },
@@ -58,7 +58,7 @@ export function useFileDownload() {
       }) => {
         setDownloadingFile(file.fileID);
         try {
-          await services.file.downloadSingleFile(file);
+          await client.files.downloadSingleFile(file);
 
           return { fileName: file.name };
         } finally {

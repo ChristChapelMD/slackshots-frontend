@@ -1,14 +1,16 @@
+import { useAuth } from "@/hooks/use-auth";
+import { useWorkspace } from "@/hooks/use-workspace";
 import { useToastQuery } from "@/hooks/use-toast-query";
-import { useAuthStore } from "@/stores/auth-store";
-import { services } from "@/services/api";
+import { client } from "@/services/client";
 
 export function useChannels() {
-  const { accessToken } = useAuthStore();
+  const { session } = useAuth();
+  const { currentWorkspace } = useWorkspace();
 
   return useToastQuery({
-    queryKey: ["channels", accessToken],
-    queryFn: () => services.channel.fetchChannels(),
-    enabled: process.env.NEXT_PUBLIC_DEMO_MODE === "true" || !!accessToken,
+    queryKey: ["channels", currentWorkspace, session?.session.id],
+    queryFn: () => client.channels.fetchChannels(),
+    enabled: !!currentWorkspace && !!session?.session.id,
     toast: {
       onError: {
         title: "Error fetching channels",
