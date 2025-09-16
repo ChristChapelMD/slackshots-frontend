@@ -12,9 +12,9 @@ export async function fetchChannels(): Promise<ChannelOption[]> {
     throw new Error(data.message || "Failed to fetch channels");
   }
 
-  const data: Channel[] = await response.json();
+  const data: { channels: Channel[] } = await response.json();
 
-  return data.map((channel) => ({
+  return data.channels.map((channel) => ({
     value: channel.id,
     label: channel.name,
     isMember: channel.isMember,
