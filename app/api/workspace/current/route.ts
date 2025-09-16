@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const workspace = await getWorkspaceById(currentWorkspaceId);
+    const workspace = await getWorkspaceById(currentWorkspaceId, false);
 
     if (!workspace) {
       return NextResponse.json({ workspace: null });

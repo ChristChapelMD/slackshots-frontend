@@ -21,14 +21,12 @@ export function MainContentContainer() {
 
   const {
     currentWorkspace,
-    fetchCurrentWorkspace,
     addWorkspace,
-    workspaceLoading,
+    isPending: workspaceLoading,
   } = useWorkspace();
 
   useEffect(() => {
     loadFiles(false);
-    fetchCurrentWorkspace();
   }, [loadFiles]);
 
   const scrollCallback = useCallback(() => {

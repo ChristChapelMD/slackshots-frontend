@@ -25,7 +25,7 @@ export async function GET() {
       );
     }
 
-    const workspace = await getWorkspaceById(workspaceId);
+    const workspace = await getWorkspaceById(workspaceId, true);
 
     if (!workspace) {
       return NextResponse.json(
@@ -34,7 +34,9 @@ export async function GET() {
       );
     }
 
-    const channels = await slack.channels.getChannels(workspace.botToken);
+    const channels = await slack.channels.getChannels(
+      workspace.botToken as string,
+    );
 
     return NextResponse.json({ channels });
   } catch (error) {
