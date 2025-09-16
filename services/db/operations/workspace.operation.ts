@@ -22,11 +22,17 @@ export async function createOrUpdateWorkspace(
 
 export async function getWorkspaceById(
   workspaceId: string,
-): Promise<WorkspaceDTO> {
+  includeSensitive: boolean = false,
+): Promise<Partial<WorkspaceDTO>> {
   try {
-    const workspace = await Workspace.findOne({
-      workspaceId,
-    }).lean<WorkspaceDTO>();
+    const projection = includeSensitive
+      ? {}
+      : { botToken: 0, botUserId: 0, scope: 0 };
+
+    const workspace = await Workspace.findOne(
+      { workspaceId },
+      projection,
+    ).lean<WorkspaceDTO>();
 
     if (!workspace) {
       throw new Error(`Workspace with ID ${workspaceId} not found.`);
