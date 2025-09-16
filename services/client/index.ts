@@ -1,9 +1,11 @@
-import * as filesModule from "./files";
-import * as uploadModule from "./upload";
-import * as channelsModule from "./channels";
+import * as channels from "./channels";
+import * as files from "./files";
+import * as upload from "./upload";
+import * as workspace from "./workspace";
 
 export const client = {
-  files: filesModule,
-  upload: uploadModule,
-  channels: channelsModule,
+  channels,
+  files,
+  upload,
+  workspace,
 };

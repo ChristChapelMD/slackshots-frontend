@@ -1,73 +1,38 @@
-"use client";
-
-import { useState, useCallback } from "react";
-
-import { WorkspaceDTO as Workspace } from "@/services/db/models/workspace.model";
+import { client } from "@/services/client";
+import { useAuth } from "@/hooks/use-auth";
+import { useToastQuery } from "@/hooks/use-toast-query";
+import { useToastMutation } from "@/hooks/use-toast-mutation";
 
 export function useWorkspace() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(
-    null,
+  const { session } = useAuth();
+
+  const { data: currentWorkspace, ...rest } = useToastQuery({
+    queryKey: ["workspace", session?.user.id],
+    queryFn: () => client.workspace.fetchCurrentWorkspace(),
+    enabled: !!session?.user.id,
+    toast: {
+      onError: {
+        title: "Error get worskapce",
+        description:
+          "Unable to retrieve workspace data. Please try again later.",
+        status: "error",
+      },
+    },
+  });
+
+  const { mutate: addWorkspace, ...mutationRest } = useToastMutation(
+    {
+      mutationFn: client.workspace.addWorkspace,
+      toast: {
+        onError: {
+          title: "Error adding workspace",
+          description: "Unable to connect to workspace. Please try again.",
+          status: "error",
+        },
+      },
+    },
+    ["addWorkspace"],
   );
-  const [workspaceLoading, setWorkspaceLoading] = useState(false);
-  const [workspaceError, setWorkspaceError] = useState<Error | null>(null);
 
-  const addWorkspace = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch("/api/workspace/add", { method: "POST" });
-      const data = await response.json();
-
-      if (!response.ok || !data.url) throw new Error("Failed to start OAuth");
-
-      localStorage.setItem("workspacePending", "true");
-
-      window.location.href = data.url;
-
-      return { success: true };
-    } catch (err: any) {
-      const e = err instanceof Error ? err : new Error("Unknown error");
-
-      setError(e);
-
-      return { success: false, error: e };
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchCurrentWorkspace = useCallback(async () => {
-    setWorkspaceLoading(true);
-    setWorkspaceError(null);
-
-    try {
-      const response = await fetch("/api/workspace/current");
-
-      if (!response.ok) throw new Error("Failed to fetch current workspace");
-
-      const data: Workspace = await response.json();
-
-      setCurrentWorkspace(data);
-    } catch (err: any) {
-      const e = err instanceof Error ? err : new Error("Unknown error");
-
-      setWorkspaceError(e);
-      setCurrentWorkspace(null);
-    } finally {
-      setWorkspaceLoading(false);
-    }
-  }, []);
-
-  return {
-    loading,
-    error,
-    addWorkspace,
-    currentWorkspace,
-    workspaceLoading,
-    workspaceError,
-    fetchCurrentWorkspace,
-  };
+  return { currentWorkspace, addWorkspace, ...rest, ...mutationRest };
 }
