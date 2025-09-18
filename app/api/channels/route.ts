@@ -3,8 +3,8 @@ import { cookies } from "next/headers";
 import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
-import { getWorkspaceById } from "@/services/db/operations/workspace.operation";
-import { slack } from "@/services/integrations";
+import { getWorkspaceById } from "@/services/api/db/operations/workspace.operation";
+import { api } from "@/services/api";
 
 export async function GET() {
   try {
@@ -34,7 +34,7 @@ export async function GET() {
       );
     }
 
-    const channels = await slack.channels.getChannels(
+    const channels = await api.slack.channels.getChannels(
       workspace.botToken as string,
     );
 
