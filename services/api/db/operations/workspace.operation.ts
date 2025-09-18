@@ -1,6 +1,6 @@
 import { Workspace, WorkspaceDTO } from "../models/workspace.model";
 
-import dbConnect from "@/services/db/connection";
+import dbConnect from "@/services/api/db/connection";
 dbConnect();
 
 export async function createOrUpdateWorkspace(

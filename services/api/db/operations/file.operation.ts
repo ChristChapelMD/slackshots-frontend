@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 import { File, FileRecordStatus, FileRecordDTO } from "../models/file.model";
 
-import dbConnect from "@/services/db/connection";
+import dbConnect from "@/services/api/db/connection";
 dbConnect();
 
 export type FileUpdateDetails = {

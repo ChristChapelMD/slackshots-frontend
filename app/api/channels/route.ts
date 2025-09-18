@@ -3,7 +3,6 @@ import { cookies } from "next/headers";
 import { headers } from "next/headers";
 
 import { auth } from "@/lib/auth";
-import { getWorkspaceById } from "@/services/api/db/operations/workspace.operation";
 import { api } from "@/services/api";
 
 export async function GET() {
@@ -25,7 +24,10 @@ export async function GET() {
       );
     }
 
-    const workspace = await getWorkspaceById(workspaceId, true);
+    const workspace = await api.db.workspace.getWorkspaceById(
+      workspaceId,
+      true,
+    );
 
     if (!workspace) {
       return NextResponse.json(

@@ -1,12 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { SlackOAuthResponse } from "@/types/slack";
-import { createOrUpdateWorkspace } from "@/services/db/operations/workspace.operation";
 import { auth } from "@/lib/auth";
-import {
-  createOrUpdateUserWorkspaceRelation,
-  getUserWorkspaceRelation,
-} from "@/services/db/operations/userworkspace.operation";
+import { api } from "@/services/api";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -50,7 +46,7 @@ export async function GET(request: Request) {
       throw new Error(data.error || "Slack OAuth exchange failed");
     }
 
-    await createOrUpdateWorkspace({
+    await api.db.workspace.createOrUpdateWorkspace({
       workspaceId: data.team.id,
       workspaceName: data.team.name,
       botToken: data.access_token,
@@ -60,13 +56,17 @@ export async function GET(request: Request) {
       enterpriseName: data.enterprise?.name,
     });
 
-    const userWorkspaceRelation = await getUserWorkspaceRelation(
-      user.id,
-      data.team.id,
-    );
+    const userWorkspaceRelation =
+      await api.db.userworkspace.getUserWorkspaceRelation(
+        user.id,
+        data.team.id,
+      );
 
     if (!userWorkspaceRelation) {
-      await createOrUpdateUserWorkspaceRelation(user.id, data.team.id);
+      await api.db.userworkspace.createOrUpdateUserWorkspaceRelation(
+        user.id,
+        data.team.id,
+      );
       console.log(
         `Created member relationship between user ${user.id} and workspace ${data.team.id}`,
       );

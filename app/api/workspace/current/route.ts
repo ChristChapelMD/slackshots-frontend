@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 
-import { getWorkspaceById } from "@/services/db/operations/workspace.operation";
+import { api } from "@/services/api";
 
 export async function GET(request: NextRequest) {
   const currentWorkspaceId = request.cookies.get("lastWorkspaceId")?.value;
@@ -13,7 +13,10 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const workspace = await getWorkspaceById(currentWorkspaceId, false);
+    const workspace = await api.db.workspace.getWorkspaceById(
+      currentWorkspaceId,
+      false,
+    );
 
     if (!workspace) {
       return NextResponse.json({ workspace: null });
