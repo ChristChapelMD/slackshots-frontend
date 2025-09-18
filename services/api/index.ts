@@ -1,4 +1,5 @@
 import * as slack from "./integrations/slack";
+import * as utilModules from "./db/utils";
 import * as fileModelOperations from "./db/operations/file.operation";
 import * as workspaceModelOperations from "./db/operations/workspace.operation";
 import * as userWorkspaceOperations from "./db/operations/userworkspace.operation";
@@ -9,5 +10,6 @@ export const api = {
     file: fileModelOperations,
     workspace: workspaceModelOperations,
     userworkspace: userWorkspaceOperations,
+    utils: utilModules,
   },
 };
