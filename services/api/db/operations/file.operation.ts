@@ -16,7 +16,7 @@ export type FileUpdateDetails = {
 export async function createFileRecord(data: FileRecordDTO) {
   const file = new File({
     ...data,
-    status: FileRecordStatus.PENDING,
+    status: FileRecordStatus.UPLOADED,
   });
 
   return await file.save();
@@ -37,7 +37,7 @@ export async function updateFileRecord(
 export async function getPendingFilesBySession(uploadSessionID: string) {
   return await File.find({
     uploadSessionID,
-    status: FileRecordStatus.PENDING,
+    status: FileRecordStatus.UPLOADED,
   }).sort({
     createdAt: 1,
   });

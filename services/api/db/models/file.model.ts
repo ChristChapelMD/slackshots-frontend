@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum FileRecordStatus {
-  PENDING = "PENDING",
+  UPLOADED = "UPLOADED",
   UPLOADED_TO_SLACK = "UPLOADED_TO_SLACK",
   FAILED = "FAILED",
 }
@@ -45,7 +45,7 @@ const FileRecordSchema = new Schema<IFileRecord>(
     status: {
       type: String,
       enum: Object.values(FileRecordStatus),
-      default: FileRecordStatus.PENDING,
+      default: FileRecordStatus.UPLOADED,
       required: true,
     },
     slackFileUrl: { type: String },
