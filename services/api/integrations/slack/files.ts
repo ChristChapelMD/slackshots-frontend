@@ -18,18 +18,18 @@ export async function uploadFilesByChannel(
     });
 
     if (!channel) {
-      throw new Error("No channel specified");
+      throw new Error("No channel specifiresed");
     }
 
-    const response: any = await client.files.uploadV2({
+    const result: any = await client.files.uploadV2({
       channel_id: channel,
       initial_comment: comment || currentDate,
       file_uploads: file_uploads,
     });
 
-    console.log(response.files[0]);
+    console.log(result.files[0]);
 
-    return response.files.flatMap(
+    return result.files.flatMap(
       (fileGroup: { files: { id: string; url_private: string }[] }) =>
         fileGroup.files.map((file: { id: string; url_private: string }) => ({
           id: file.id,
