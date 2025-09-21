@@ -1,15 +1,25 @@
 import { createSlackClient } from "./client";
 
+interface UploadResponse {
+  id: string;
+  url: string;
+}
+
+interface UploadResult {
+  uploadResponseArray: UploadResponse[];
+  fileMetadata: any; // Update with actual response from Slack for this method
+}
+
 export async function uploadFilesByChannel(
   accessToken: string,
   file_uploads: { filename: string; file: string }[],
   channel: string,
   comment?: string,
-): Promise<{ id: string; url_private: string }[]> {
+): Promise<UploadResult> {
   const client = createSlackClient(accessToken);
 
   try {
-    //move to utils
+    // TODO - move to utils
     const currentDate = new Date().toLocaleDateString("en-US", {
       weekday: "long",
       year: "numeric",
@@ -21,21 +31,23 @@ export async function uploadFilesByChannel(
       throw new Error("No channel specifiresed");
     }
 
+    // TODO - need to recreate the upload response instead of any
     const result: any = await client.files.uploadV2({
       channel_id: channel,
       initial_comment: comment || currentDate,
       file_uploads: file_uploads,
     });
 
-    console.log(result.files[0]);
-
-    return result.files.flatMap(
-      (fileGroup: { files: { id: string; url_private: string }[] }) =>
-        fileGroup.files.map((file: { id: string; url_private: string }) => ({
-          id: file.id,
-          url_private: file.url_private,
-        })),
-    );
+    return {
+      uploadResponseArray: result.files.flatMap(
+        (fileGroup: { files: { id: string; url_private: string }[] }) =>
+          fileGroup.files.map((file) => ({
+            id: file.id,
+            url: file.url_private,
+          })),
+      ),
+      fileMetadata: result.files,
+    };
   } catch (error: any) {
     console.error(`Failed to upload files to Slack: ${error.message}`);
     throw error;
