@@ -10,7 +10,7 @@ interface UploadResult {
   fileMetadata: any; // Update with actual response from Slack for this method
 }
 
-export async function uploadFilesByChannel(
+export async function uploadFiles(
   accessToken: string,
   file_uploads: { filename: string; file: string }[],
   channel: string,
