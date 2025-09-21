@@ -1,33 +1,69 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { headers } from "next/headers";
 
 import { api } from "@/services/api";
+import { auth } from "@/lib/auth";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
+export async function POST(request: NextRequest) {
   try {
-    const { files, channel, comment } = req.body;
+    const session = await auth.api.getSession({ headers: await headers() });
+    const user = session?.user;
 
-    if (!files || !channel) {
-      return res.status(400).json({ error: "Missing files or channel" });
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const result = await api.slack.upload.uploadFiles(
-      process.env.SLACK_ACCESS_TOKEN!,
+    const cookieStore = await cookies();
+    const workspaceId = cookieStore.get("lastWorkspaceId")?.value;
+
+    if (!workspaceId) {
+      return NextResponse.json(
+        { error: "No workspace selected or linked" },
+        { status: 400 },
+      );
+    }
+
+    const workspace = await api.db.workspace.getWorkspaceById(
+      workspaceId,
+      true,
+    );
+
+    if (!workspace) {
+      return NextResponse.json(
+        { error: "Workspace not found" },
+        { status: 404 },
+      );
+    }
+
+    const body = await request.json();
+    const { files, channel, comment } = body;
+
+    if (!channel) {
+      return NextResponse.json(
+        { error: "No channel selected" },
+        { status: 400 },
+      );
+    }
+
+    if (!files) {
+      return NextResponse.json({ error: "No files selected" }, { status: 400 });
+    }
+
+    const uploadResponse = await api.slack.upload.uploadFiles(
+      workspace.botToken as string,
       files,
       channel,
       comment,
     );
 
-    return res.status(200).json(result);
-  } catch (err: any) {
-    console.error("Slack upload error:", err);
+    return NextResponse.json({ uploadResponse });
+  } catch (error) {
+    console.error("[Uploads API (Provider: Slack)] Error:", error);
 
-    return res.status(500).json({ error: err.message });
+    return NextResponse.json(
+      { error: (error as Error).message },
+      { status: 500 },
+    );
   }
 }
