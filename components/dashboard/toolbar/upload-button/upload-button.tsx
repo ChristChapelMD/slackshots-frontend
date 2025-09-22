@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@heroui/button";
-
+import { useUpload } from "@/hooks/use-upload";
 import { useDrawerStore } from "@/stores/drawer-store";
 import { TextureContainer } from "@/components/ui/texture-container";
 import { useUploadProcessStore } from "@/stores/upload-process-store";
@@ -9,10 +9,11 @@ import { useUploadFormStore } from "@/stores/upload-form-store";
 import { cn } from "@/lib/utils";
 
 export function UploadButton() {
+  const { startUpload } = useUpload();
+
   const files = useUploadFormStore((state) => state.formState.files);
   const channel = useUploadFormStore((state) => state.formState.channel);
   const isUploading = useUploadProcessStore((state) => state.isUploading);
-  const startUpload = useUploadProcessStore((state) => state.startUpload);
   const isOpen = useDrawerStore((state) => state.isOpen);
   const closeDrawer = useDrawerStore((state) => state.closeDrawer);
   const isAnimating = useDrawerStore((state) => state.isAnimating);
