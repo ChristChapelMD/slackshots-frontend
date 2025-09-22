@@ -1,6 +1,5 @@
 import { addToast } from "@heroui/toast";
 
-import TusClient from "@/lib/tus-client";
 import { UploadOptions } from "@/types/service-types/upload-service";
 
 export async function uploadFiles({
