@@ -2,12 +2,43 @@ import { addToast } from "@heroui/toast";
 
 import { UploadOptions } from "@/types/service-types/upload-service";
 
+export async function uploadToBlob(
+  files: File[],
+  uploadSessionId: string,
+  onProgress?: (progress: number) => void,
+) {
+  const responses: any[] = [];
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+
+    const response = await fetch("/api/uploads/blob", {
+      method: "POST",
+      body: JSON.stringify({
+        fileName: file.name,
+        fileType: file.type,
+        uploadSessionId,
+      }),
+    });
+
+    responses.push(response);
+
+    if (onProgress) {
+      onProgress(((i + 1) / files.length) * 100);
+    }
+  }
+
+  return responses;
+}
+
+export async function uploadToSlack() {}
+
 export async function uploadFiles({
   files,
   channel,
   comment,
   messageBatchSize,
-  sessionId,
+  uploadSessionId,
   onProgress,
 }: UploadOptions): Promise<boolean> {
   if (!files || files.length === 0) {
@@ -25,7 +56,7 @@ export async function uploadFiles({
         metadata: {
           filename: file.name,
           filetype: file.type || getFileTypeByExtension(file.name),
-          sessionID: sessionId,
+          sessionID: uploadSessionId,
           channel,
           comment,
           messageBatchSize,
@@ -54,7 +85,7 @@ export async function uploadFiles({
 
     await Promise.all(uploads);
 
-    await TusClient.finalizeUpload(sessionId);
+    await TusClient.finalizeUpload(uploadSessionId);
 
     addToast({
       title: "Upload Complete",

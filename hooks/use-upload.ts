@@ -16,9 +16,9 @@ export function useUpload() {
 
     if (!formState.files || !formState.channel) return;
 
-    const sessionId = crypto.randomUUID();
+    const uploadSessionId = crypto.randomUUID();
 
-    useUploadFormStore.getState().updateForm({ sessionId });
+    useUploadFormStore.getState().updateForm({ uploadSessionId });
 
     setUploading(true);
     setProgress(0);
@@ -26,7 +26,7 @@ export function useUpload() {
     try {
       const blobResponses = await client.upload.uploadToBlob({
         files: formState.files,
-        sessionId,
+        uploadSessionId,
         onProgress: (progress: number) => setProgress(progress),
       });
 
