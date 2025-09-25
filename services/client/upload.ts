@@ -16,6 +16,11 @@ export async function uploadToBlob(
     const response = await upload(file.name, file, {
       access: "public",
       handleUploadUrl: "/api/uploads/blob",
+      clientPayload: JSON.stringify({
+        uploadSessionId,
+        fileSize: file.size,
+        fileType: file.type,
+      }),
     });
 
     responses.push(response);
