@@ -13,7 +13,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const jsonResponse = await handleUpload({
       body,
       request,
-      onBeforeGenerateToken: async (clientPayload: any) => {
+      onBeforeGenerateToken: async (pathname, clientPayload: any) => {
         const session = await auth.api.getSession({ headers: await headers() });
         const user = session?.user;
 
@@ -51,8 +51,6 @@ export async function POST(request: Request): Promise<NextResponse> {
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
-        console.log("blob upload completed", blob, tokenPayload);
-
         const { uploadSessionId, fileSize, fileType, userId, workspaceId } =
           JSON.parse(tokenPayload ?? "{}");
 
