@@ -10,43 +10,37 @@ export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
 
   try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    const user = session?.user;
-
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const cookieStore = await cookies();
-    const workspaceId = cookieStore.get("lastWorkspaceId")?.value;
-
-    if (!workspaceId) {
-      return NextResponse.json(
-        { error: "No workspace selected or linked" },
-        { status: 400 },
-      );
-    }
-
-    const workspace = await api.db.workspace.getWorkspaceById(
-      workspaceId,
-      true,
-    );
-
-    if (!workspace) {
-      return NextResponse.json(
-        { error: "Workspace not found" },
-        { status: 404 },
-      );
-    }
-
     const jsonResponse = await handleUpload({
       body,
       request,
       onBeforeGenerateToken: async (clientPayload: any) => {
+        const session = await auth.api.getSession({ headers: await headers() });
+        const user = session?.user;
+
+        if (!user) {
+          throw new Error("Unauthorized");
+        }
+
+        const cookieStore = await cookies();
+        const workspaceId = cookieStore.get("lastWorkspaceId")?.value;
+
+        if (!workspaceId) {
+          throw new Error("No workspace selected or linked");
+        }
+
+        const workspace = await api.db.workspace.getWorkspaceById(
+          workspaceId,
+          true,
+        );
+
+        if (!workspace) {
+          throw new Error("Workspace not found");
+        }
+
         return {
           allowedContentTypes: ["image/jpeg", "image/png", "image/webp"],
           addRandomSuffix: true,
-          callbackUrl: "api/uploads/blob",
+          callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL}/api/uploads/blob`,
           tokenPayload: JSON.stringify({
             uploadSessionId: clientPayload?.uploadSessionId ?? "unknown",
             fileSize: clientPayload?.fileSize ?? 0,
