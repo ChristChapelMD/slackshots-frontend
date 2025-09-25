@@ -24,10 +24,22 @@ export function useUpload() {
     setProgress(0);
 
     try {
+      // First upload to blob storage
       const blobResponses = await client.upload.uploadToBlob(
         formState.files,
+        formState.channel,
+        formState.comment,
+        formState.messageBatchSize,
         uploadSessionId,
         (progress: number) => setProgress(progress),
+      );
+
+      // Then upload to provider
+      await client.upload.uploadToSlack(
+        blobResponses,
+        formState.channel,
+        formState.comment,
+        formState.messageBatchSize,
       );
 
       refreshFilesAfterUpload();

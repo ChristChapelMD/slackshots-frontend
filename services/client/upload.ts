@@ -6,7 +6,7 @@ export async function uploadToBlob( // Fix type later
   files: FileList,
   channel: string,
   comment: string,
-  messageBatchSize: string,
+  messageBatchSize: number,
   uploadSessionId: string,
   onProgress?: (progress: number) => void,
 ) {
@@ -53,7 +53,7 @@ export async function uploadToSlack(
   responses: any[],
   channel: string,
   comment: string,
-  messageBatchSize: string,
+  messageBatchSize: number,
 ) {
   const response = await fetch("/api/uploads/slack", {
     method: "POST",
