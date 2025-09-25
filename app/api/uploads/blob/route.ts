@@ -46,6 +46,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         return {
           allowedContentTypes: ["image/jpeg", "image/png", "image/webp"],
           addRandomSuffix: true,
+          callbackUrl: "api/uploads/blob",
           tokenPayload: JSON.stringify({
             uploadSessionId: clientPayload?.uploadSessionId ?? "unknown",
             fileSize: clientPayload?.fileSize ?? 0,
