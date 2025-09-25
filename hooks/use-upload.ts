@@ -24,18 +24,11 @@ export function useUpload() {
     setProgress(0);
 
     try {
-      const blobResponses = await client.upload.uploadToBlob({
-        files: formState.files,
+      const blobResponses = await client.upload.uploadToBlob(
+        formState.files,
         uploadSessionId,
-        onProgress: (progress: number) => setProgress(progress),
-      });
-
-      const slackResponses = await client.upload.uploadToSlack({
-        files: blobResponses,
-        channel: formState.channel,
-        comment: formState.comment,
-        onProgress: (progress: number) => setProgress(progress),
-      });
+        (progress: number) => setProgress(progress),
+      );
 
       refreshFilesAfterUpload();
 
@@ -44,8 +37,6 @@ export function useUpload() {
       setProgress(0);
 
       resetForm();
-
-      return slackResponses;
     } catch (error) {
       console.error("Upload process failed", error);
       setUploading(false);

@@ -1,9 +1,10 @@
 import { addToast } from "@heroui/toast";
+import { upload } from "@vercel/blob/client";
 
 import { UploadOptions } from "@/types/service-types/upload-service";
 
 export async function uploadToBlob(
-  files: File[],
+  files: FileList,
   uploadSessionId: string,
   onProgress?: (progress: number) => void,
 ) {
@@ -12,13 +13,9 @@ export async function uploadToBlob(
   for (let i = 0; i < files.length; i++) {
     const file = files[i];
 
-    const response = await fetch("/api/uploads/blob", {
-      method: "POST",
-      body: JSON.stringify({
-        fileName: file.name,
-        fileType: file.type,
-        uploadSessionId,
-      }),
+    const response = await upload(file.name, file, {
+      access: "public",
+      handleUploadUrl: "/api/uploads/blob",
     });
 
     responses.push(response);
