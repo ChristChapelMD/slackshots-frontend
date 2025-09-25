@@ -1,13 +1,25 @@
-import { addToast } from "@heroui/toast";
 import { upload } from "@vercel/blob/client";
 
 import { UploadOptions } from "@/types/service-types/upload-service";
 
-export async function uploadToBlob(
+export async function uploadToBlob( // Fix type later
   files: FileList,
+  channel: string,
+  comment: string,
+  messageBatchSize: string,
   uploadSessionId: string,
   onProgress?: (progress: number) => void,
 ) {
+  if (!files || files.length === 0) {
+    throw new Error("No files selected for upload");
+  }
+  if (!channel) {
+    throw new Error("No channel selected for upload");
+  }
+  if (!uploadSessionId) {
+    throw new Error("No upload session set for upload");
+  }
+
   const responses: any[] = [];
 
   for (let i = 0; i < files.length; i++) {
@@ -17,13 +29,17 @@ export async function uploadToBlob(
       access: "public",
       handleUploadUrl: "/api/uploads/blob",
       clientPayload: JSON.stringify({
+        // Figure out why this isnt working
         uploadSessionId,
         fileSize: file.size,
         fileType: file.type,
       }),
     });
 
-    responses.push(response);
+    responses.push({
+      response,
+      orginalFileName: file.name,
+    });
 
     if (onProgress) {
       onProgress(((i + 1) / files.length) * 100);
@@ -33,87 +49,28 @@ export async function uploadToBlob(
   return responses;
 }
 
-export async function uploadToSlack() {}
+export async function uploadToSlack(
+  responses: any[],
+  channel: string,
+  comment: string,
+  messageBatchSize: string,
+) {
+  const response = await fetch("/api/uploads/slack", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(responses),
+  });
 
-export async function uploadFiles({
-  files,
-  channel,
-  comment,
-  messageBatchSize,
-  uploadSessionId,
-  onProgress,
-}: UploadOptions): Promise<boolean> {
-  if (!files || files.length === 0) {
-    throw new Error("No files selected for upload");
+  if (!response.ok) {
+    throw new Error("Failed to upload files to Slack");
   }
 
-  try {
-    const filesList = Array.from(files);
-    const totalFiles = filesList.length;
-    let completedUploads = 0;
+  const data = await response.json();
 
-    const uploads = filesList.map((file) =>
-      TusClient.uploadFile({
-        file,
-        metadata: {
-          filename: file.name,
-          filetype: file.type || getFileTypeByExtension(file.name),
-          sessionID: uploadSessionId,
-          channel,
-          comment,
-          messageBatchSize,
-        },
-        onProgress: (fileProgress) => {
-          if (onProgress) {
-            const averageProgress = Math.round(
-              (completedUploads * 100 + fileProgress) / totalFiles,
-            );
-
-            onProgress(averageProgress);
-          }
-        },
-        onSuccess: () => {
-          completedUploads++;
-          if (onProgress) {
-            const overallProgress = Math.round(
-              (completedUploads / totalFiles) * 100,
-            );
-
-            onProgress(overallProgress);
-          }
-        },
-      }),
-    );
-
-    await Promise.all(uploads);
-
-    await TusClient.finalizeUpload(uploadSessionId);
-
-    addToast({
-      title: "Upload Complete",
-      description: `Successfully uploaded ${totalFiles} file${
-        totalFiles !== 1 ? "s" : ""
-      }`,
-      severity: "success",
-      color: "success",
-      timeout: 5000,
-    });
-
-    return true;
-  } catch (error) {
-    addToast({
-      title: "Upload Failed",
-      description:
-        error instanceof Error
-          ? error.message
-          : "An error occurred during upload",
-      severity: "danger",
-      color: "danger",
-      timeout: 7000,
-    });
-
-    throw error;
-  }
+  return data;
 }
 
 function getFileTypeByExtension(filename: string): string {
