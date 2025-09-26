@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
       files,
       channel,
       comment,
+      messageBatchSize,
     );
 
     return NextResponse.json({ data: uploadResponse.uploadResponseArray });
