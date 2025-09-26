@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 import { Workspace, WorkspaceDTO } from "../models/workspace.model";
 
 import dbConnect from "@/services/api/db/connection";
@@ -23,16 +25,15 @@ export async function createOrUpdateWorkspace(
 export async function getWorkspaceById(
   workspaceId: string,
   includeSensitive: boolean = false,
-): Promise<Partial<WorkspaceDTO>> {
+): Promise<Partial<WorkspaceDTO> & { _id: mongoose.Types.ObjectId }> {
   try {
     const projection = includeSensitive
       ? {}
       : { botToken: 0, botUserId: 0, scope: 0 };
 
-    const workspace = await Workspace.findOne(
-      { workspaceId },
-      projection,
-    ).lean<WorkspaceDTO>();
+    const workspace = await Workspace.findOne({ workspaceId }, projection).lean<
+      WorkspaceDTO & { _id: mongoose.Types.ObjectId }
+    >();
 
     if (!workspace) {
       throw new Error(`Workspace with ID ${workspaceId} not found.`);

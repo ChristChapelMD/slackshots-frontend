@@ -22,14 +22,14 @@ export async function POST(request: Request): Promise<NextResponse> {
         }
 
         const cookieStore = await cookies();
-        const workspaceId = cookieStore.get("lastWorkspaceId")?.value;
+        const lastWorkspaceId = cookieStore.get("lastWorkspaceId")?.value;
 
-        if (!workspaceId) {
+        if (!lastWorkspaceId) {
           throw new Error("No workspace selected or linked");
         }
 
         const workspace = await api.db.workspace.getWorkspaceById(
-          workspaceId,
+          lastWorkspaceId,
           true,
         );
 
@@ -46,7 +46,7 @@ export async function POST(request: Request): Promise<NextResponse> {
             fileSize: clientPayload?.fileSize ?? 0,
             fileType: clientPayload?.fileType ?? "application/octet-stream",
             userId: user.id,
-            workspaceId,
+            workspaceId: workspace._id,
           }),
         };
       },
