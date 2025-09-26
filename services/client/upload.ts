@@ -1,12 +1,8 @@
 import { upload } from "@vercel/blob/client";
 
-import { UploadOptions } from "@/types/service-types/upload-service";
-
 export async function uploadToBlob( // Fix type later
   files: FileList,
   channel: string,
-  comment: string,
-  messageBatchSize: number,
   uploadSessionId: string,
   onProgress?: (progress: number) => void,
 ) {
@@ -38,7 +34,7 @@ export async function uploadToBlob( // Fix type later
 
     responses.push({
       response,
-      orginalFileName: file.name,
+      originalFileName: file.name,
     });
 
     if (onProgress) {
@@ -55,22 +51,35 @@ export async function uploadToSlack(
   comment: string,
   messageBatchSize: number,
 ) {
-  const response = await fetch("/api/uploads/slack", {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ responses, channel, comment, messageBatchSize }),
-  });
+  const slackUpoadsResponse: any[] = [];
 
-  if (!response.ok) {
-    throw new Error("Failed to upload files to Slack");
+  for (let i = 0; i < responses.length; i += messageBatchSize) {
+    const batch = responses.slice(i, i + messageBatchSize);
+
+    const slackPayload = batch.map((file) => ({
+      filename: file.originalFileName,
+      file: file.response.url,
+    }));
+
+    const response = await fetch("/api/uploads/slack", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ responses: slackPayload, channel, comment }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to upload files to Slack");
+    }
+
+    const data = await response.json();
+
+    slackUpoadsResponse.push(data);
   }
 
-  const data = await response.json();
-
-  return data;
+  return slackUpoadsResponse;
 }
 
 function getFileTypeByExtension(filename: string): string {

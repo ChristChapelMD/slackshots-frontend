@@ -37,12 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const {
-      responses: blobResponses,
-      channel,
-      comment,
-      messageBatchSize,
-    } = body;
+    const { responses: files, channel, comment } = body;
 
     if (!channel) {
       return NextResponse.json(
@@ -51,16 +46,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!blobResponses || blobResponses.length) {
+    if (!files || files.length == 0) {
       return NextResponse.json({ error: "No files selected" }, { status: 400 });
     }
-
-    const files: { file: string; filename: string }[] = blobResponses.map(
-      (blobResponse: any) => ({
-        file: blobResponse.response.url,
-        filename: blobResponse.originalFileName,
-      }),
-    );
 
     const uploadResponse = await api.slack.upload.uploadFiles(
       workspace.botToken as string,

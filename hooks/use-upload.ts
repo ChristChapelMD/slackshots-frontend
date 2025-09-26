@@ -28,8 +28,6 @@ export function useUpload() {
       const blobResponses = await client.upload.uploadToBlob(
         formState.files,
         formState.channel,
-        formState.comment,
-        formState.messageBatchSize,
         uploadSessionId,
         (progress: number) => setProgress(progress),
       );

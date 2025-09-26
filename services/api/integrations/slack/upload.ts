@@ -1,4 +1,3 @@
-import { WebClient } from "@slack/web-api";
 import { createSlackClient } from "./client";
 
 interface UploadResponse {
@@ -32,21 +31,37 @@ export async function uploadFiles(
       throw new Error("No channel specifiresed");
     }
 
+    const filesBuffers = await Promise.all(
+      file_uploads.map(async ({ filename, file }) => {
+        const res = await fetch(file);
+
+        if (!res.ok) throw new Error(`Failed to fetch ${filename}`);
+        const arrayBuffer = await res.arrayBuffer();
+
+        return {
+          filename,
+          file: Buffer.from(arrayBuffer),
+        };
+      }),
+    );
+
     // TODO - need to recreate the upload response instead of any
     const result: any = await client.files.uploadV2({
       channel_id: channel,
       initial_comment: comment || currentDate,
-      file_uploads: file_uploads,
+      file_uploads: filesBuffers,
     });
 
+    const uploadResponseArray: UploadResponse[] = result.files.flatMap(
+      (group: { files: { id: string; url_private: string }[] }) =>
+        group.files.map((file) => ({
+          id: file.id,
+          url: file.url_private,
+        })),
+    );
+
     return {
-      uploadResponseArray: result.files.flatMap(
-        (fileGroup: { files: { id: string; url_private: string }[] }) =>
-          fileGroup.files.map((file) => ({
-            id: file.id,
-            url: file.url_private,
-          })),
-      ),
+      uploadResponseArray,
       fileMetadata: result.files,
     };
   } catch (error: any) {
