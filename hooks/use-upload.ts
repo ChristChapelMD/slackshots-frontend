@@ -2,6 +2,7 @@ import { useUploadProcessStore } from "@/stores/upload-process-store";
 import { useUploadFormStore } from "@/stores/upload-form-store";
 import { client } from "@/services/client";
 import { refreshFilesAfterUpload } from "@/hooks/use-files";
+import { useToastMutation } from "@/hooks/use-toast-mutation";
 
 export function useUpload() {
   const setUploading = useUploadProcessStore((state) => state.setUploading);
@@ -10,52 +11,65 @@ export function useUpload() {
     (state) => state.setLastUploadTimestamp,
   );
 
-  const startUpload = async () => {
-    const formState = useUploadFormStore.getState().formState;
-    const resetForm = useUploadFormStore.getState().resetForm;
+  const uploadMutation = useToastMutation(
+    {
+      mutationFn: async () => {
+        const formState = useUploadFormStore.getState().formState;
+        const resetForm = useUploadFormStore.getState().resetForm;
 
-    if (!formState.files || !formState.channel) return;
+        if (!formState.files || !formState.channel) {
+          throw new Error("No files or channel selected");
+        }
 
-    const uploadSessionId = crypto.randomUUID();
+        const uploadSessionId = crypto.randomUUID();
 
-    useUploadFormStore.getState().updateForm({ uploadSessionId });
+        useUploadFormStore.getState().updateForm({ uploadSessionId });
 
-    setUploading(true);
-    setProgress(0);
+        setUploading(true);
+        setProgress(0);
 
-    try {
-      // First upload to blob storage
-      const blobResponses = await client.upload.uploadToBlob(
-        formState.files,
-        formState.channel,
-        uploadSessionId,
-        (progress: number) => setProgress(progress),
-      );
+        try {
+          const blobResponses = await client.upload.uploadToBlob(
+            formState.files,
+            formState.channel,
+            uploadSessionId,
+            (progress: number) => setProgress(progress),
+          );
 
-      // Then upload to provider
-      await client.upload.uploadToSlack(
-        blobResponses,
-        formState.channel,
-        formState.comment,
-        formState.messageBatchSize,
-      );
+          await client.upload.uploadToSlack(
+            blobResponses,
+            formState.channel,
+            formState.comment,
+            formState.messageBatchSize,
+          );
 
-      refreshFilesAfterUpload();
+          refreshFilesAfterUpload();
+          setLastUploadTimestamp(Date.now());
+          resetForm();
 
-      setLastUploadTimestamp(Date.now());
-      setUploading(false);
-      setProgress(0);
+          return "Upload successful";
+        } catch (error) {
+          throw error;
+        } finally {
+          setUploading(false);
+          setProgress(0);
+        }
+      },
+      toast: {
+        onSuccess: {
+          title: "Upload Complete",
+          description: "Your files have been successfully uploaded.",
+          status: "success",
+        },
+        onError: {
+          title: "Upload Failed",
+          description: "There was a problem with the upload. Please try again.",
+          status: "error",
+        },
+      },
+    },
+    ["file-upload"],
+  );
 
-      resetForm();
-    } catch (error) {
-      console.error("Upload process failed", error);
-      setUploading(false);
-      setLastUploadTimestamp(Date.now());
-      throw error;
-    }
-  };
-
-  return { startUpload };
+  return { startUpload: uploadMutation.mutate };
 }
-
-// TODO - implement cancel feature via abort controller
