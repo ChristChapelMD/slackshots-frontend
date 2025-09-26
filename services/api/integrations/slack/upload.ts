@@ -1,3 +1,4 @@
+import { WebClient } from "@slack/web-api";
 import { createSlackClient } from "./client";
 
 interface UploadResponse {
@@ -14,7 +15,6 @@ export async function uploadFiles(
   accessToken: string,
   file_uploads: { filename: string; file: string }[],
   channel: string,
-  messageBatchSize: number,
   comment?: string,
 ): Promise<UploadResult> {
   const client = createSlackClient(accessToken);
