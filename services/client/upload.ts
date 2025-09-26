@@ -61,7 +61,7 @@ export async function uploadToSlack(
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(responses),
+    body: JSON.stringify({ responses, channel, comment, messageBatchSize }),
   });
 
   if (!response.ok) {
