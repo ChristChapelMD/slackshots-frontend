@@ -55,7 +55,7 @@ export async function POST(request: Request): Promise<NextResponse> {
           JSON.parse(tokenPayload ?? "{}");
 
         try {
-          await api.db.file.createFileRecord({
+          const fileRecord = await api.db.file.createFileRecord({
             fileName: blob.pathname.split("/").pop() || "",
             blobUrl: blob.url,
             blobPathname: blob.pathname,
@@ -66,6 +66,8 @@ export async function POST(request: Request): Promise<NextResponse> {
             uploadSessionId,
             status: FileRecordStatus.UPLOADED,
           });
+
+          (blob as any).fileRecordId = fileRecord._id.toString();
         } catch (error) {
           console.error(error);
           throw new Error("Could not create file record");
