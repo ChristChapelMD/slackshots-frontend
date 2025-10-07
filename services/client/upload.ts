@@ -6,40 +6,43 @@ export async function uploadToBlob( // Fix type later
   uploadSessionId: string,
   onProgress?: (progress: number) => void,
 ) {
-  if (!files || files.length === 0) {
-    throw new Error("No files selected for upload");
-  }
-  if (!channel) {
-    throw new Error("No channel selected for upload");
-  }
-  if (!uploadSessionId) {
-    throw new Error("No upload session set for upload");
-  }
+  if (!files || files.length === 0) throw new Error("No files selected");
+  if (!channel) throw new Error("No channel selected");
+  if (!uploadSessionId) throw new Error("No upload session");
 
+  const batchSize = 5;
   const responses: any[] = [];
+  const fileArray = Array.from(files);
 
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
+  for (let i = 0; i < fileArray.length; i += batchSize) {
+    const batch = fileArray.slice(i, i + batchSize);
 
-    const response = await upload(file.name, file, {
-      access: "public",
-      handleUploadUrl: "/api/uploads/blob",
-      clientPayload: JSON.stringify({
-        // Figure out why this isnt working
-        uploadSessionId,
-        fileSize: file.size,
-        fileType: file.type,
-      }),
+    // upload batch in parallel
+    const settled = await Promise.allSettled(
+      batch.map((file) =>
+        upload(file.name, file, {
+          access: "public",
+          handleUploadUrl: "/api/uploads/blob",
+          clientPayload: JSON.stringify({
+            uploadSessionId,
+            fileSize: file.size,
+            fileType: file.type,
+          }),
+        }),
+      ),
+    );
+
+    // process results
+    settled.forEach((result, index) => {
+      if (result.status === "fulfilled") {
+        responses.push({
+          response: result.value,
+          originalFileName: batch[index].name,
+        });
+      } else {
+        console.error(`File failed: ${batch[index].name}`, result.reason);
+      }
     });
-
-    responses.push({
-      response,
-      originalFileName: file.name,
-    });
-
-    if (onProgress) {
-      onProgress(((i + 1) / files.length) * 100);
-    }
   }
 
   return responses;

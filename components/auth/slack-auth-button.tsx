@@ -18,7 +18,7 @@ export function SlackAuthButton() {
       onPress={signInWithSlack}
     >
       <Image alt="Slack Logo" height={40} src={SlackLogo} width={40} />
-      {loading ? "...Authenticating with Slack" : "Continue with Slack"}
+      {loading ? "Authenticating with Slack..." : "Continue with Slack"}
     </Button>
   );
 }

@@ -75,7 +75,7 @@ export function MainContentContainer() {
             >
               <Image alt="Slack Logo" height={24} src={SlackLogo} width={24} />
               {workspaceLoading
-                ? "...Authenticating with Slack"
+                ? "Authenticating. with Slack.."
                 : "Continue with Slack"}
             </Button>
           </div>

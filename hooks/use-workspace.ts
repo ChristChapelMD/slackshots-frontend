@@ -23,6 +23,11 @@ export function useWorkspace() {
   const { mutate: addWorkspace, ...mutationRest } = useToastMutation(
     {
       mutationFn: client.workspace.addWorkspace,
+      onSuccess: (data) => {
+        if (data.url) {
+          window.location.href = data.url;
+        }
+      },
       toast: {
         onError: {
           title: "Error adding workspace",

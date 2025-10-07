@@ -8,6 +8,7 @@ import { FileRecordStatus } from "@/services/api/db/models/file.model";
 
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
+  let encodedFileName = "";
 
   try {
     const jsonResponse = await handleUpload({
@@ -54,6 +55,8 @@ export async function POST(request: Request): Promise<NextResponse> {
         const { uploadSessionId, fileSize, fileType, userId, workspaceId } =
           JSON.parse(tokenPayload ?? "{}");
 
+        const blobFileName = blob.pathname.split("/").pop() || "";
+
         try {
           const fileRecord = await api.db.file.createFileRecord({
             fileName: blob.pathname.split("/").pop() || "",
@@ -67,7 +70,9 @@ export async function POST(request: Request): Promise<NextResponse> {
             status: FileRecordStatus.UPLOADED,
           });
 
-          (blob as any).fileRecordId = fileRecord._id.toString();
+          encodedFileName = `${fileRecord._id.toString().length}#${fileRecord._id.toString()}_#${blobFileName.length}${blobFileName}`;
+
+          blob.pathname = encodedFileName;
         } catch (error) {
           console.error(error);
           throw new Error("Could not create file record");
@@ -75,7 +80,10 @@ export async function POST(request: Request): Promise<NextResponse> {
       },
     });
 
-    return NextResponse.json(jsonResponse);
+    return NextResponse.json({
+      ...jsonResponse, // keep everything from Vercel’s response
+      encodedFileName, // add your custom data
+    });
   } catch (error) {
     return NextResponse.json(
       { error: (error as Error).message },
