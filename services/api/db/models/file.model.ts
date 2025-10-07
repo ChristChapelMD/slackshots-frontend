@@ -8,8 +8,6 @@ export enum FileRecordStatus {
 
 export interface FileRecordDTO {
   fileName: string;
-  blobUrl: string;
-  blobPathname: string;
   fileSize: number;
   uploadSessionId: string;
   userId: mongoose.Types.ObjectId;
@@ -27,8 +25,6 @@ interface IFileRecord extends FileRecordDTO, Document {}
 const FileRecordSchema = new Schema<IFileRecord>(
   {
     fileName: { type: String, required: true },
-    blobUrl: { type: String, required: true },
-    blobPathname: { type: String, required: true },
     fileSize: { type: Number, required: true },
     uploadSessionId: { type: String, required: true, index: true },
     userId: {
