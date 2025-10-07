@@ -1,3 +1,5 @@
+import * as fs from "fs/promises";
+
 import { createSlackClient } from "./client";
 
 interface UploadResponse {
@@ -19,7 +21,6 @@ export async function uploadFiles(
   const client = createSlackClient(accessToken);
 
   try {
-    // TODO - move to utils
     const currentDate = new Date().toLocaleDateString("en-US", {
       weekday: "long",
       year: "numeric",
@@ -28,24 +29,20 @@ export async function uploadFiles(
     });
 
     if (!channel) {
-      throw new Error("No channel specifiresed");
+      throw new Error("No channel specified");
     }
 
     const filesBuffers = await Promise.all(
       file_uploads.map(async ({ filename, file }) => {
-        const res = await fetch(file);
-
-        if (!res.ok) throw new Error(`Failed to fetch ${filename}`);
-        const arrayBuffer = await res.arrayBuffer();
+        const fileBuffer = await fs.readFile(file);
 
         return {
           filename,
-          file: Buffer.from(arrayBuffer),
+          file: fileBuffer,
         };
       }),
     );
 
-    // TODO - need to recreate the upload response instead of any
     const result: any = await client.files.uploadV2({
       channel_id: channel,
       initial_comment: comment || currentDate,

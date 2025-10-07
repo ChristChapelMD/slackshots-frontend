@@ -28,20 +28,26 @@ export function useUpload() {
         setUploading(true);
         setProgress(0);
 
-        try {
-          const blobResponses = await client.upload.uploadToBlob(
-            formState.files,
-            formState.channel,
-            uploadSessionId,
-            (progress: number) => setProgress(progress),
-          );
+        const fileArray = Array.from(formState.files);
+        const batchSize = formState.messageBatchSize;
 
-          await client.upload.uploadToSlack(
-            blobResponses,
-            formState.channel,
-            formState.comment,
-            formState.messageBatchSize,
-          );
+        try {
+          for (let i = 0; i < fileArray.length; i += batchSize) {
+            const batch = fileArray.slice(i, i + batchSize);
+
+            await client.upload.uploadBatchToServer(
+              batch,
+              formState.channel,
+              formState.comment,
+              uploadSessionId,
+            );
+
+            const currentProgress = Math.round(
+              ((i + batch.length) / fileArray.length) * 100,
+            );
+
+            setProgress(currentProgress);
+          }
 
           refreshFilesAfterUpload();
           setLastUploadTimestamp(Date.now());
