@@ -32,8 +32,12 @@ export async function uploadFiles(
       throw new Error("No channel specified");
     }
 
+    const sortedFiles = file_uploads.sort((a, b) =>
+      a.filename.localeCompare(b.filename),
+    );
+
     const filesBuffers = await Promise.all(
-      file_uploads.map(async ({ filename, file }) => {
+      sortedFiles.map(async ({ filename, file }) => {
         const fileBuffer = await fs.readFile(file);
 
         return {
