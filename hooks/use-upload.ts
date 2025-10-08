@@ -1,10 +1,12 @@
+import { useQueryClient } from "@tanstack/react-query";
+
 import { useUploadProcessStore } from "@/stores/upload-process-store";
 import { useUploadFormStore } from "@/stores/upload-form-store";
 import { client } from "@/services/client";
-import { refreshFilesAfterUpload } from "@/hooks/use-files";
 import { useToastMutation } from "@/hooks/use-toast-mutation";
 
 export function useUpload() {
+  const queryClient = useQueryClient();
   const setUploading = useUploadProcessStore((state) => state.setUploading);
   const setProgress = useUploadProcessStore((state) => state.setProgress);
   const setLastUploadTimestamp = useUploadProcessStore(
@@ -49,7 +51,7 @@ export function useUpload() {
             setProgress(currentProgress);
           }
 
-          refreshFilesAfterUpload();
+          queryClient.invalidateQueries({ queryKey: ["files"] });
           setLastUploadTimestamp(Date.now());
           resetForm();
 

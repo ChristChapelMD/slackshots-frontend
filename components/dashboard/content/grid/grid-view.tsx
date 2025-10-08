@@ -2,7 +2,6 @@
 
 import GridItem from "./grid-item";
 
-import { useFiles } from "@/hooks/use-files";
 import { useFileStore } from "@/stores/file-store";
 import { useUIStore } from "@/stores/ui-store";
 import LoadingAnimation from "@/components/ui/loading-animation";
