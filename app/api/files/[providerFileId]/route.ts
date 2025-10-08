@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { api } from "@/services/api";
+import { headers } from "next/headers";
 
 type Params = Promise<{ providerFileId: string }>;
 
@@ -15,9 +16,11 @@ export async function GET(
     const { providerFileId } = await params;
 
     // Pass the request headers to getSession, as it may need them.
-    const session = await auth.api.getSession({ headers: request.headers });
-    if (!session?.user) {
-      return new NextResponse("Unauthorized", { status: 401 });
+    const session = await auth.api.getSession({ headers: await headers() });
+    const user = session?.user;
+
+    if (!user) {
+      throw new Error("Unauthorized");
     }
 
     const fileRecord = await api.db.file.findFileByProviderId(providerFileId);
