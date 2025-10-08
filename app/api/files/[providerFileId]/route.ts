@@ -1,29 +1,24 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { headers } from "next/headers";
+
 import { auth } from "@/lib/auth";
 import { api } from "@/services/api";
-import { headers } from "next/headers";
 
 type Params = Promise<{ providerFileId: string }>;
 
-// THE FIX IS IN THE FUNCTION SIGNATURE:
-// We destructure { params } directly from the second argument.
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Params },
-) {
-  try {
-    // 'params' is now directly available, so we can get the ID from it.
-    const { providerFileId } = await params;
+export async function GET({ params }: { params: Params }) {
+  const { providerFileId } = await params;
 
-    // Pass the request headers to getSession, as it may need them.
+  try {
     const session = await auth.api.getSession({ headers: await headers() });
     const user = session?.user;
 
     if (!user) {
-      throw new Error("Unauthorized");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const fileRecord = await api.db.file.findFileByProviderId(providerFileId);
+
     if (!fileRecord) {
       return new NextResponse("Not Found", { status: 404 });
     }
@@ -32,8 +27,9 @@ export async function GET(
       fileRecord.workspaceId.toString(),
       true,
     );
+
     if (!workspace || !workspace.botToken) {
-      return new NextResponse("Workspace configuration error", { status: 500 });
+      return new NextResponse("Workspace config error", { status: 500 });
     }
 
     const userWorkspaceRelation =
@@ -41,6 +37,7 @@ export async function GET(
         session.user.id,
         workspace.workspaceId as string,
       );
+
     if (!userWorkspaceRelation) {
       return new NextResponse("Forbidden", { status: 403 });
     }
@@ -48,6 +45,7 @@ export async function GET(
     const slackUpload = fileRecord.uploads.find(
       (upload: any) => upload.provider === "slack",
     );
+
     if (!slackUpload) {
       return new NextResponse("File not found on provider", { status: 404 });
     }
@@ -57,17 +55,24 @@ export async function GET(
       workspace.botToken,
     );
 
-    const imageBuffer = await slackResponse.arrayBuffer();
+    if (!slackResponse.body) {
+      return new NextResponse("Response from provider contained no data.", {
+        status: 502,
+      });
+    }
 
-    return new NextResponse(imageBuffer, {
+    const responseHeaders = {
+      "Content-Type": fileRecord.fileType,
+      "Content-Length": fileRecord.fileSize.toString(),
+    };
+
+    return new NextResponse(slackResponse.body, {
       status: 200,
-      headers: {
-        "Content-Type": fileRecord.fileType,
-        "Content-Length": fileRecord.fileSize.toString(),
-      },
+      headers: responseHeaders,
     });
   } catch (error) {
     console.error("[File Proxy Error]:", error);
+
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
