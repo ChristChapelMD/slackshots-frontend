@@ -1,7 +1,7 @@
 import { FetchFilesResponse } from "@/types/service-types/file-service";
 
 export async function fetchFiles(
-  page: number | string,
+  page: number,
   limit: number,
   fileTypes?: string[],
 ): Promise<FetchFilesResponse> {
@@ -25,11 +25,8 @@ export async function fetchFiles(
   const data = await response.json();
 
   return {
-    files: data.imageUrls || [],
-    nextCursor:
-      data.nextCursor ||
-      (data.hasMore ? (typeof page === "number" ? page + 1 : page) : undefined),
-    hasMore: !!data.hasMore,
+    files: data.files || [],
+    hasMore: data.files?.length > 0, // A simple way to determine if there might be more
   };
 }
 
