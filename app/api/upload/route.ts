@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       throw new Error("No workspace selected or linked");
     }
 
-    const workspace = await api.db.workspace.getWorkspaceById(
+    const workspace = await api.db.workspace.getWorkspaceBySlackId(
       lastWorkspaceId,
       true,
     );

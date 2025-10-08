@@ -24,7 +24,7 @@ export async function GET() {
       );
     }
 
-    const workspace = await api.db.workspace.getWorkspaceById(
+    const workspace = await api.db.workspace.getWorkspaceBySlackId(
       workspaceId,
       true,
     );

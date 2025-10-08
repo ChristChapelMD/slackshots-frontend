@@ -28,7 +28,7 @@ export default memo(function GridItem({ item }: GridItemProps) {
     <div
       ref={containerRef}
       className="relative w-full h-full rounded-2xl aspect-square"
-      data-file-id={item.fileID}
+      data-file-id={item._id}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -48,7 +48,7 @@ export default memo(function GridItem({ item }: GridItemProps) {
         {isHovered && !isSelectMode && (
           <CardFooter className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 flex justify-center">
             <p className="text-white text-sm truncate w-full text-center">
-              {item.name}
+              {item.fileName}
             </p>
           </CardFooter>
         )}
@@ -57,7 +57,7 @@ export default memo(function GridItem({ item }: GridItemProps) {
         <div className="absolute top-2 right-2 z-10">
           <RadioGroup
             className="pointer-events-none"
-            value={isSelected ? item.fileID : ""}
+            value={isSelected ? item._id : ""}
           >
             <Radio
               classNames={{
@@ -65,7 +65,7 @@ export default memo(function GridItem({ item }: GridItemProps) {
               }}
               color="secondary"
               size="lg"
-              value={item.fileID}
+              value={item._id}
             />
           </RadioGroup>
         </div>

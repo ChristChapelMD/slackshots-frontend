@@ -72,6 +72,10 @@ export async function addUploadToRecord(
   );
 }
 
+export async function findFileByProviderId(providerFileId: string) {
+  return await File.findOne({ "uploads.providerFileId": providerFileId });
+}
+
 export async function updateFileRecord(
   fileId: mongoose.Types.ObjectId,
   status: FileRecordStatus,

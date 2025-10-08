@@ -26,7 +26,7 @@ export async function fetchFiles(
 
   return {
     files: data.files || [],
-    hasMore: data.files?.length > 0, // A simple way to determine if there might be more
+    hasMore: data.files?.length > 0,
   };
 }
 

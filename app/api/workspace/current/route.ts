@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const workspace = await api.db.workspace.getWorkspaceById(
+    const workspace = await api.db.workspace.getWorkspaceBySlackId(
       currentWorkspaceId,
       false,
     );

@@ -62,7 +62,7 @@ export function GridView({ files, isLoading }: GridViewProps) {
         }
       >
         {files.map((item) => (
-          <div key={item.fileID} data-file-id={item.fileID}>
+          <div key={item._id} data-file-id={item._id}>
             <GridItem item={item} />
           </div>
         ))}
