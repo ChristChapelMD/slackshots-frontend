@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-interface FileUIStore {
+interface FileStore {
   prioritizedFileIds: string[];
   setPrioritizedFileIds: (ids: string[]) => void;
 }
 
-export const useFileUIStore = create<FileUIStore>()(
+export const useFileStore = create<FileStore>()(
   devtools((set) => {
     return {
       prioritizedFileIds: [],

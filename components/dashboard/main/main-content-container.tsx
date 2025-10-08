@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { Button } from "@heroui/button";
 import Image from "next/image";
 
@@ -14,7 +14,8 @@ import { useWorkspace } from "@/hooks/use-workspace";
 import SlackLogo from "@/public/SLA-appIcon-desktop.png";
 
 export function MainContentContainer() {
-  const { loadFiles, isLoading, hasMore } = useFiles();
+  const { files, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useFiles();
   const viewMode = useUIStore((state) => state.viewMode);
 
   const mainContainerRef = useRef<HTMLDivElement>(null);
@@ -25,15 +26,11 @@ export function MainContentContainer() {
     isPending: workspaceLoading,
   } = useWorkspace();
 
-  useEffect(() => {
-    loadFiles(false);
-  }, [loadFiles]);
-
   const scrollCallback = useCallback(() => {
-    if (!isLoading && hasMore) {
-      loadFiles(true);
+    if (!isFetchingNextPage && hasNextPage) {
+      fetchNextPage();
     }
-  }, [isLoading, hasMore, loadFiles]);
+  }, [isFetchingNextPage, hasNextPage, fetchNextPage]);
 
   const scrollRef = useInfiniteScroll(scrollCallback, []);
 
@@ -83,7 +80,7 @@ export function MainContentContainer() {
           <>
             {viewMode === "grid" && (
               <>
-                <GridView />
+                <GridView files={files} isLoading={isLoading} />
                 <div className="h-32 boder-8 border-red-900 z-50" />
                 <div className="boder-8 border-red-900" data-sentinel="true" />
               </>
