@@ -32,7 +32,11 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const result = await api.upload.processAndUpload(
       "slack",
-      { botToken: workspace.botToken as string },
+      {
+        botToken: workspace.botToken as string,
+        userId: api.db.utils.toObjectId(user.id),
+        workspaceId: workspace._id,
+      },
       formData,
     );
 

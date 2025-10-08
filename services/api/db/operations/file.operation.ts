@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 
-import { File, FileRecordStatus, FileRecordDTO } from "../models/file.model";
+import { File, FileRecordStatus } from "../models/file.model";
 
 import dbConnect from "@/services/api/db/connection";
+
 dbConnect();
 
 export type FileUpdateDetails = {
@@ -13,13 +14,62 @@ export type FileUpdateDetails = {
   moderationFlag?: boolean;
 };
 
-export async function createFileRecord(data: FileRecordDTO) {
-  const file = new File({
-    ...data,
-    status: FileRecordStatus.UPLOADED,
-  });
+export async function findOrCreateFileRecordsForBatch(
+  files: {
+    fileName: string;
+    fileSize: number;
+    fileType: string;
+  }[],
+  uploadSessionId: string,
+  userId: mongoose.Types.ObjectId,
+  workspaceId: mongoose.Types.ObjectId,
+) {
+  const operations = files.map((file) => ({
+    updateOne: {
+      filter: {
+        uploadSessionId,
+        fileName: file.fileName,
+        userId,
+      },
+      update: {
+        $setOnInsert: {
+          ...file,
+          uploadSessionId,
+          userId,
+          workspaceId,
+          status: FileRecordStatus.PENDING,
+          uploads: [],
+        },
+      },
+      upsert: true,
+    },
+  }));
 
-  return await file.save();
+  await File.bulkWrite(operations);
+
+  return await File.find({
+    uploadSessionId,
+    userId,
+    fileName: { $in: files.map((file) => file.fileName) },
+  });
+}
+
+export async function addUploadToRecord(
+  fileRecordId: mongoose.Types.ObjectId,
+  providerUpload: {
+    provider: string;
+    providerFileId: string;
+    providerFileUrl: string;
+  },
+) {
+  return await File.findByIdAndUpdate(
+    fileRecordId,
+    {
+      $push: { uploads: providerUpload },
+      $set: { status: FileRecordStatus.UPLOADED },
+    },
+    { new: true },
+  );
 }
 
 export async function updateFileRecord(
@@ -37,7 +87,7 @@ export async function updateFileRecord(
 export async function getPendingFilesBySession(uploadSessionID: string) {
   return await File.find({
     uploadSessionID,
-    status: FileRecordStatus.UPLOADED,
+    status: FileRecordStatus.PENDING,
   }).sort({
     createdAt: 1,
   });
@@ -57,7 +107,7 @@ export async function getFilesForUser(
   page: number = 1,
   limit: number = 16,
 ) {
-  return await File.find({ userId, status: FileRecordStatus.UPLOADED_TO_SLACK })
+  return await File.find({ userId, status: FileRecordStatus.UPLOADED })
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
     .limit(limit);
@@ -70,7 +120,7 @@ export async function getFilesForWorkspace(
 ) {
   return await File.find({
     workspaceId,
-    status: FileRecordStatus.UPLOADED_TO_SLACK,
+    status: FileRecordStatus.UPLOADED,
   })
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)

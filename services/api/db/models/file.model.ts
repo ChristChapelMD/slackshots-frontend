@@ -1,8 +1,8 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export enum FileRecordStatus {
+  PENDING = "PENDING",
   UPLOADED = "UPLOADED",
-  UPLOADED_TO_SLACK = "UPLOADED_TO_SLACK",
   FAILED = "FAILED",
 }
 
@@ -14,8 +14,11 @@ export interface FileRecordDTO {
   workspaceId: mongoose.Types.ObjectId;
   fileType: string;
   status: FileRecordStatus;
-  slackFileUrl?: string;
-  slackFileId?: string;
+  uploads: {
+    provider: string;
+    providerFileId: string;
+    providerFileUrl: string;
+  }[];
   errorMessage?: string;
   metadata?: Record<string, any>;
 }
@@ -46,8 +49,14 @@ const FileRecordSchema = new Schema<IFileRecord>(
       default: FileRecordStatus.UPLOADED,
       required: true,
     },
-    slackFileUrl: { type: String },
-    slackFileId: { type: String },
+    uploads: [
+      {
+        provider: { type: String, required: true, enum: ["slack"] },
+        providerFileId: { type: String, required: true },
+        providerFileUrl: { type: String, required: true },
+        uploadedAt: { type: Date, default: Date.now },
+      },
+    ],
     errorMessage: { type: String },
     metadata: { type: Schema.Types.Mixed },
   },
