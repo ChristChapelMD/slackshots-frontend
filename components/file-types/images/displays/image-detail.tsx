@@ -13,17 +13,20 @@ interface ImageDetailDisplayProps {
 export default function ImageDetailDisplay({ item }: ImageDetailDisplayProps) {
   const [hasError, setHasError] = useState(false);
 
+  const providerFileId = item.uploads?.[0]?.providerFileId;
+  const imageUrl = providerFileId ? `/api/files/${providerFileId}` : null;
+
   return (
     <div className="flex flex-col md:flex-row h-full">
       {/* Image preview */}
       <div className="relative w-full md:w-2/3 h-80 md:h-full bg-black flex items-center justify-center">
-        {item.url && (
+        {imageUrl && (
           <Image
             fill
             unoptimized
-            alt={item.name || "Image"}
+            alt={item.fileName || "Image"}
             className="object-contain"
-            src={item.url}
+            src={imageUrl}
             onError={() => setHasError(true)}
           />
         )}
@@ -36,7 +39,7 @@ export default function ImageDetailDisplay({ item }: ImageDetailDisplayProps) {
 
       {/* Details panel */}
       <div className="w-full md:w-1/3 p-6 overflow-y-auto">
-        <h2 className="text-xl font-semibold mb-4">{item.name}</h2>
+        <h2 className="text-xl font-semibold mb-4">{item.fileName}</h2>
 
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-2 text-sm">
@@ -48,11 +51,11 @@ export default function ImageDetailDisplay({ item }: ImageDetailDisplayProps) {
 
             <div className="font-medium">Dimensions</div>
             <div className="col-span-2">
-              {item.width}×{item.height}px
+              {item.fileSize}×{item.fileSize}px
             </div>
 
             <div className="font-medium">Uploaded</div>
-            <div className="col-span-2">{formatDate(item.uploadDate)}</div>
+            <div className="col-span-2">{"formatDate(item.uploadDate)"}</div>
           </div>
 
           {/* Add more file details here */}

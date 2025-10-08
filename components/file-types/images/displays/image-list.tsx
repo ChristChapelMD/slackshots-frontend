@@ -15,9 +15,12 @@ interface ImageListDisplayProps {
 export default function ImageListDisplay({ item }: ImageListDisplayProps) {
   const [hasError, setHasError] = useState(false);
 
+  const providerFileId = item.uploads?.[0]?.providerFileId;
+  const imageUrl = providerFileId ? `/api/files/${providerFileId}` : null;
+
   const isSelectMode = useSelectionStore((state) => state.isSelectMode);
   const selectedFiles = useSelectionStore((state) => state.selectedFiles);
-  const isSelected = selectedFiles.some((file) => file.fileID === item.fileID);
+  const isSelected = selectedFiles.some((file) => file._id === item._id);
 
   return (
     <div
@@ -27,13 +30,13 @@ export default function ImageListDisplay({ item }: ImageListDisplayProps) {
     >
       <div className="flex items-center space-x-4">
         <div className="relative w-12 h-12 flex-shrink-0 bg-gray-200 dark:bg-gray-700 rounded">
-          {item.url && (
+          {imageUrl && (
             <Image
               fill
               unoptimized
-              alt={item.name || "File"}
+              alt={item.fileName || "File"}
               className="object-cover rounded"
-              src={item.url}
+              src={imageUrl}
               onError={() => setHasError(true)}
             />
           )}
@@ -45,12 +48,12 @@ export default function ImageListDisplay({ item }: ImageListDisplayProps) {
         </div>
 
         <div className="flex-grow min-w-0">
-          <h3 className="text-sm font-medium truncate">{item.name}</h3>
+          <h3 className="text-sm font-medium truncate">{item.fileName}</h3>
           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
             <span>{formatFileSize(item.fileSize)}</span>
             <span className="mx-2">•</span>
             <Calendar className="mr-1" size={14} />
-            <span>{formatDate(item.uploadDate)}</span>
+            <span>{"formatDate(item.uploadDate)"}</span>
           </div>
         </div>
 

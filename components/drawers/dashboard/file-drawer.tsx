@@ -67,7 +67,9 @@ export function FileDrawer({ item, view }: FileDrawerProps) {
   return (
     <TextureContainer className="h-full flex flex-col">
       <div className="border-b border-zinc-200 dark:border-zinc-700 p-4 flex items-center justify-between">
-        <h2 className="text-lg font-medium truncate max-w-md">{item.name}</h2>
+        <h2 className="text-lg font-medium truncate max-w-md">
+          {item.fileName}
+        </h2>
         <div className="flex items-center gap-2">
           <ButtonGroup size="sm" variant="flat">
             <Button onPress={handleDownload}>
@@ -93,11 +95,12 @@ export function FileDrawer({ item, view }: FileDrawerProps) {
             <div className="font-medium">Type</div>
             <div className="col-span-2">{item.fileType}</div>
 
-            {item.width && item.height && (
+            {/*VERY IMPORTANT - CHANGE THIS TO BE IMAGE DIMENSIONS, NEED TO UPDATE FILE RECORD SCHEMA */}
+            {item.fileSize && item.fileSize && (
               <>
                 <div className="font-medium">Dimensions</div>
                 <div className="col-span-2">
-                  {item.width}×{item.height}px
+                  {item.fileSize}×{item.fileSize}px
                 </div>
               </>
             )}

@@ -34,7 +34,7 @@ export async function fetchFiles(
 }
 
 export async function deleteFiles(
-  files: { fileID: string; deleteFlag: "app" | "both" }[],
+  files: { fileId: string; deleteFlag: "app" | "both" }[],
 ): Promise<boolean> {
   if (!files || files.length === 0) {
     throw new Error("No files selected to delete.");

@@ -22,20 +22,23 @@ export default function ImagePreviewDisplay({
   const zoomIn = () => setScale((current) => Math.min(current + 0.25, 3));
   const zoomOut = () => setScale((current) => Math.max(current - 0.25, 0.5));
 
+  const providerFileId = item.uploads?.[0]?.providerFileId;
+  const imageUrl = providerFileId ? `/api/files/${providerFileId}` : null;
+
   return (
     <div className="relative h-[80vh] bg-black/80 flex items-center justify-center">
       <div
         className="relative transition-transform duration-300"
         style={{ transform: `scale(${scale})` }}
       >
-        {item.url && (
+        {imageUrl && (
           <Image
             unoptimized
-            alt={item.name || "Preview"}
+            alt={item.fileName || "Preview"}
             className="object-contain max-h-[80vh] max-w-full"
-            height={item.height || 600}
-            src={item.url}
-            width={item.width || 800}
+            height={item.fileSize || 600}
+            src={imageUrl}
+            width={item.fileSize || 800}
             onError={() => setHasError(true)}
           />
         )}

@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useToastMutation } from "@/hooks/use-toast-mutation";
 import { useDrawerStore } from "@/stores/drawer-store";
 import { useSelectionStore } from "@/stores/selection-store";
-import { useFileStore } from "@/stores/file-store";
+import { client } from "@/services/client";
 
 type DeleteFlag = "app" | "both";
 
@@ -17,8 +17,6 @@ interface DeleteFilesParams {
 export function useFileDelete() {
   const queryClient = useQueryClient();
 
-  const deleteFiles = useFileStore((state) => state.deleteFiles);
-
   const selectedFiles = useSelectionStore((state) => state.selectedFiles);
   const clearSelection = useSelectionStore((state) => state.clearSelection);
   const setSelectMode = useSelectionStore((state) => state.setSelectMode);
@@ -28,7 +26,9 @@ export function useFileDelete() {
   const deleteMutation = useToastMutation(
     {
       mutationFn: async ({ fileIDs, deleteFlag }: DeleteFilesParams) => {
-        await deleteFiles(fileIDs, deleteFlag);
+        await client.files.deleteFiles(
+          fileIDs.map((id) => ({ fileId: id, deleteFlag })),
+        );
 
         return { count: fileIDs.length };
       },
@@ -65,7 +65,7 @@ export function useFileDelete() {
   const performDelete = async (deleteFlag: DeleteFlag) => {
     if (selectedFiles.length <= 0) return;
 
-    const fileIDs = selectedFiles.map((file) => file.fileID);
+    const fileIDs = selectedFiles.map((file) => file._id);
 
     deleteMutation.mutate({ fileIDs, deleteFlag });
   };

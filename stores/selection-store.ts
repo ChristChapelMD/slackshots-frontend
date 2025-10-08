@@ -31,13 +31,13 @@ export const useSelectionStore = create<SelectionStore>((set) => ({
       if (!state.isSelectMode) return state;
 
       const isSelected = state.selectedFiles.some(
-        (selectedFile) => selectedFile.fileID === file.fileID,
+        (selectedFile) => selectedFile._id === file._id,
       );
 
       return {
         selectedFiles: isSelected
           ? state.selectedFiles.filter(
-              (selectedFile) => selectedFile.fileID !== file.fileID,
+              (selectedFile) => selectedFile._id !== file._id,
             )
           : [...state.selectedFiles, file],
       };
