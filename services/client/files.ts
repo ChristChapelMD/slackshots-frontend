@@ -1,4 +1,7 @@
-import { FetchFilesResponse } from "@/types/service-types/file-service";
+import {
+  FileItem,
+  FetchFilesResponse,
+} from "@/types/service-types/file-service";
 
 export async function fetchFiles(
   page: number,
@@ -53,25 +56,24 @@ export async function deleteFiles(
   return true;
 }
 
-export async function downloadSingleFile(file: {
-  fileID: string;
-  name: string;
-  url: string;
-}): Promise<void> {
-  if (!file?.url) throw new Error("Invalid file or missing URL");
+export async function downloadSingleFile(file: FileItem): Promise<void> {
+  const providerFileId = file.uploads?.[0]?.providerFileId;
 
-  const response = await fetch(file.url, {
+  if (!providerFileId) throw new Error("Invalid file or missing provider ID");
+
+  const response = await fetch(`/api/files/${providerFileId}`, {
     credentials: "include",
   });
 
-  if (!response.ok) throw new Error(`Failed to fetch file: ${response.status}`);
-
+  if (!response.ok) {
+    throw new Error(`Failed to download file: ${response.statusText}`);
+  }
   const blob = await response.blob();
   const objectUrl = URL.createObjectURL(blob);
   const a = document.createElement("a");
 
   a.href = objectUrl;
-  a.download = file.name || `file-${file.fileID}`;
+  a.download = file.fileName || `file-${file._id}`;
   document.body.appendChild(a);
   a.click();
   setTimeout(() => {
@@ -80,9 +82,7 @@ export async function downloadSingleFile(file: {
   }, 100);
 }
 
-export async function downloadMultipleFiles(
-  files: { fileID: string; name: string; url: string }[],
-): Promise<void> {
+export async function downloadMultipleFiles(files: FileItem[]): Promise<void> {
   if (!files || files.length === 0)
     throw new Error("No files selected to download");
 
