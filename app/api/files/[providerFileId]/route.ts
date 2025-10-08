@@ -4,10 +4,12 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { api } from "@/services/api";
 
-type Params = Promise<{ providerFileId: string }>;
-
-export async function GET({ params }: { params: Params }) {
-  const { providerFileId } = await params;
+export async function GET(
+  request: Request,
+  context: { params: { providerFileId: string } } | any,
+) {
+  const params = await context.params;
+  const { providerFileId } = params;
 
   try {
     const session = await auth.api.getSession({ headers: await headers() });
