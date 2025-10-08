@@ -4,8 +4,6 @@ import { File, FileRecordStatus } from "../models/file.model";
 
 import dbConnect from "@/services/api/db/connection";
 
-dbConnect();
-
 export type FileUpdateDetails = {
   slackFileId?: string;
   slackFileUrl?: string;
@@ -24,6 +22,8 @@ export async function findOrCreateFileRecordsForBatch(
   userId: mongoose.Types.ObjectId,
   workspaceId: mongoose.Types.ObjectId,
 ) {
+  await dbConnect();
+
   const operations = files.map((file) => ({
     updateOne: {
       filter: {
@@ -62,6 +62,8 @@ export async function addUploadToRecord(
     providerFileUrl: string;
   },
 ) {
+  await dbConnect();
+
   return await File.findByIdAndUpdate(
     fileRecordId,
     {
@@ -73,6 +75,8 @@ export async function addUploadToRecord(
 }
 
 export async function findFileByProviderId(providerFileId: string) {
+  await dbConnect();
+
   return await File.findOne({ "uploads.providerFileId": providerFileId });
 }
 
@@ -81,6 +85,8 @@ export async function updateFileRecord(
   status: FileRecordStatus,
   details: FileUpdateDetails = {},
 ) {
+  await dbConnect();
+
   return await File.findByIdAndUpdate(
     fileId,
     { status, ...details },
@@ -89,6 +95,8 @@ export async function updateFileRecord(
 }
 
 export async function getPendingFilesBySession(uploadSessionID: string) {
+  await dbConnect();
+
   return await File.find({
     uploadSessionID,
     status: FileRecordStatus.PENDING,
@@ -98,6 +106,8 @@ export async function getPendingFilesBySession(uploadSessionID: string) {
 }
 
 export async function getFailedFilesBySession(uploadSessionID: string) {
+  await dbConnect();
+
   return await File.find({
     uploadSessionID,
     status: FileRecordStatus.FAILED,
@@ -111,6 +121,8 @@ export async function getFilesForUser(
   page: number = 1,
   limit: number = 16,
 ) {
+  await dbConnect();
+
   return await File.find({ userId, status: FileRecordStatus.UPLOADED })
     .sort({ createdAt: -1 })
     .skip((page - 1) * limit)
@@ -122,6 +134,8 @@ export async function getFilesForWorkspace(
   page: number = 1,
   limit: number = 16,
 ) {
+  await dbConnect();
+
   return await File.find({
     workspaceId,
     status: FileRecordStatus.UPLOADED,
@@ -135,6 +149,8 @@ export async function markFileAsFailed(
   fileId: mongoose.Types.ObjectId,
   errorMessage?: string,
 ) {
+  await dbConnect();
+
   return await updateFileRecord(fileId, FileRecordStatus.FAILED, {
     errorMessage,
   });
@@ -145,6 +161,8 @@ export async function bulkUpdateFilesStatus(
   status: FileRecordStatus,
   details: FileUpdateDetails = {},
 ) {
+  await dbConnect();
+
   return await File.updateMany(
     { _id: { $in: fileIds } },
     { status, ...details },
@@ -155,6 +173,8 @@ export const anonymizeFileRecord = async (
   userId: mongoose.Types.ObjectId,
   fileIds: string[],
 ) => {
+  await dbConnect();
+
   if (!fileIds.length) {
     return 0;
   }

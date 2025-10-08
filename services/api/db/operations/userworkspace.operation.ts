@@ -2,7 +2,6 @@ import { UserWorkspace, UserWorkspaceDTO } from "../models/userworkspace.model";
 import { WorkspaceDTO } from "../models/workspace.model";
 
 import dbConnect from "@/services/api/db/connection";
-dbConnect();
 
 type RoleEnum = "member" | "owner";
 
@@ -11,6 +10,8 @@ export async function createOrUpdateUserWorkspaceRelation(
   workspaceId: string,
   role: RoleEnum = "member",
 ): Promise<UserWorkspaceDTO | null> {
+  await dbConnect();
+
   try {
     const userWorkspace = await UserWorkspace.findOneAndUpdate(
       { workspaceId, userId },
@@ -29,6 +30,8 @@ export async function getUserWorkspaceRelation(
   userId: string,
   workspaceId: string,
 ): Promise<UserWorkspaceDTO | null> {
+  await dbConnect();
+
   try {
     const userWorkspace = await UserWorkspace.findOne({
       userId,
@@ -45,6 +48,8 @@ export async function getUserWorkspaceRelation(
 export async function getAllUserWorkspaces(
   userId: string,
 ): Promise<(WorkspaceDTO & { role: RoleEnum })[]> {
+  await dbConnect();
+
   try {
     const workspacesWithRoles = await UserWorkspace.aggregate([
       { $match: { userId } },
@@ -80,6 +85,8 @@ export async function removeUserFromWorkspace(
   userId: string,
   workspaceId: string,
 ): Promise<void> {
+  await dbConnect();
+
   try {
     await UserWorkspace.deleteOne({
       userId,

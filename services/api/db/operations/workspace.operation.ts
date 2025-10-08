@@ -3,11 +3,12 @@ import mongoose from "mongoose";
 import { Workspace, WorkspaceDTO } from "../models/workspace.model";
 
 import dbConnect from "@/services/api/db/connection";
-dbConnect();
 
 export async function createOrUpdateWorkspace(
   data: WorkspaceDTO,
 ): Promise<WorkspaceDTO | null> {
+  await dbConnect();
+
   try {
     const workspace = await Workspace.findOneAndUpdate(
       { workspaceId: data.workspaceId },
@@ -26,6 +27,8 @@ export async function getWorkspaceBySlackId(
   slackWorkspaceId: string,
   includeSensitive: boolean = false,
 ): Promise<Partial<WorkspaceDTO> & { _id: mongoose.Types.ObjectId }> {
+  await dbConnect();
+
   try {
     const projection = includeSensitive ? {} : { botToken: 0 };
     const workspace = await Workspace.findOne(
@@ -48,6 +51,8 @@ export async function getWorkspaceByDocumentId(
   documentId: string | mongoose.Types.ObjectId,
   includeSensitive: boolean = false,
 ): Promise<Partial<WorkspaceDTO> & { _id: mongoose.Types.ObjectId }> {
+  await dbConnect();
+
   try {
     const projection = includeSensitive ? {} : { botToken: 0 };
     const workspace = await Workspace.findById(documentId, projection).lean<
@@ -66,6 +71,8 @@ export async function getWorkspaceByDocumentId(
 }
 
 export async function listAllWorkspaces(): Promise<Array<WorkspaceDTO | null>> {
+  await dbConnect();
+
   try {
     return await Workspace.find({}).lean<WorkspaceDTO[]>();
   } catch (error) {
