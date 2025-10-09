@@ -14,9 +14,16 @@ export async function GET(
   const params = await context.params;
   const { providerFileId } = params;
 
+  console.log(process.env.NEXT_RUNTIME);
+  console.log(providerFileId);
+
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     const user = session?.user;
+
+    console.log(session);
+    console.log(user);
+    console.log(user?.id);
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -55,10 +62,12 @@ export async function GET(
       return new NextResponse("File not found on provider", { status: 404 });
     }
 
+    console.time("slack-fetch");
     const slackResponse = await api.slack.files.fetchFile(
       slackUpload.providerFileUrl,
       workspace.botToken,
     );
+    console.timeEnd("slack-fetch");
 
     if (!slackResponse.body) {
       return new NextResponse("Response from provider contained no data.", {
