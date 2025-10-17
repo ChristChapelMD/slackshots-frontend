@@ -1,9 +1,9 @@
 <div align="center">
-![SlackShots Logo](public/SSLOGO_NOBG.png)
+![SlackShots Logo](./public/SSLOGO_NOBG.png)
 
 # Slackshots
 
-**Fast, private, and intelligent file management for Slack — with search that actually understands you.**
+**Fast, private, and intelligent file management for Slack**
 
 
 SlackShots is a web-based application designed to be a fast, private, and intelligent file management for Slack. It aims to solve the problem of uploading and managing large numbers of files within a user's Slack workspace, which can become difficult as the volume of files grows. The application provides a dedicated interface for users to browse, search, and manage their Slack files, with a focus on speed, and privacy.
@@ -15,8 +15,8 @@ SlackShots is a web-based application designed to be a fast, private, and intell
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/slackshots-frontend.git
-cd slackshots-frontend
+git clone https://github.com/ChristChapelMD/slackshots.git
+cd slackshots
 ```
 
 ### 2. Install dependencies
@@ -53,7 +53,7 @@ npm run dev
 
 The application will be available at http://localhost:3000.
 
-_For more examples, please refer to the [Documentation](https://slackshot.app/docs)_
+_For more examples, please refer to the [Documentation](https://slackshots.app/docs)_
 
 ## Project Structure
 - **app/**: Next.js app directory with page routes
@@ -67,12 +67,6 @@ _For more examples, please refer to the [Documentation](https://slackshot.app/do
 - **stores/**: Zustand stores for state management
 - **hooks/**: Custom React hooks
 - **lib/**: Utility functions and third-party client wrappers
-*   [Next.js](https://nextjs.org/)
-*   [React](https://reactjs.org/)
-*   [Tailwind CSS](https://tailwindcss.com/)
-*   [TypeScript](https://www.typescriptlang.org/)
-*   [MongoDB](https://www.mongodb.com/)
-*   [Slack API](https://api.slack.com/)
 
 ## Contributing
 
@@ -89,5 +83,5 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 This project is licensed under the MIT License
 
 ## Links
-- [Report an Issue](https://github.com/your-username/slackshots-frontend/issues)
+- [Report an Issue](https://github.com/ChristChapelMD/slackshots/issues)
 - [Slack API Documentation](https://api.slack.com/docs)
