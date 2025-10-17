@@ -1,7 +1,5 @@
 <div align="center">
-![SlackShots Logo](./public/SSLOGO_NOBG.png)
-
-# Slackshots
+<h1><img src="https://github.com/ChristChapelMD/slackshots/raw/main/public/SSLOGO_NOBG.png" width="30"/> SlackShots</h1>
 
 **Fast, private, and intelligent file management for Slack — with search that actually understands you.**
 
