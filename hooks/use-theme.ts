@@ -1,4 +1,5 @@
 // Created by copilot to work with seetings drawer, replace with actual theme switch logic
+"use client";
 
 import { useEffect, useState } from "react";
 
@@ -65,12 +66,19 @@ export const useTheme = () => {
     };
   }, [theme]);
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return {
     theme,
     setTheme: updateTheme,
     isDark:
-      theme === "dark" ||
-      (theme === "system" &&
-        window?.matchMedia("(prefers-color-scheme: dark)").matches),
+      isMounted &&
+      (theme === "dark" ||
+        (theme === "system" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)),
   };
 };
