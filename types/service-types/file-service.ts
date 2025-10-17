@@ -1,13 +1,12 @@
 export interface FileItem {
-  fileID: string;
-  name: string;
+  _id: string;
+  fileName: string;
   fileType: string;
-  uploadDate: string;
   fileSize: number;
-  width?: number;
-  height?: number;
-  url: string;
-  thumbnailUrl?: string;
+  uploads: {
+    provider: string;
+    providerFileId: string;
+  }[];
 }
 
 export interface FileMetadata extends FileItem {

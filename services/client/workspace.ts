@@ -1,4 +1,4 @@
-import { WorkspaceDTO } from "@/services/db/models/workspace.model";
+import { WorkspaceDTO } from "@/services/api/db/models/workspace.model";
 
 export async function fetchCurrentWorkspace(): Promise<WorkspaceDTO> {
   const response = await fetch("/api/workspace/current", {

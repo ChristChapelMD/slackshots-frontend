@@ -1,8 +1,7 @@
-import { useFileStore } from "@/stores/file-store";
+import { FileItem } from "@/types/service-types/file-service";
 import { useSelectionStore } from "@/stores/selection-store";
 
-export function useFileSelection() {
-  const files = useFileStore((state) => state.files);
+export function useFileSelection(files: FileItem[]) {
   const setSelectMode = useSelectionStore((state) => state.setSelectMode);
   const setSelectedFiles = useSelectionStore((state) => state.setSelectedFiles);
   const isSelectMode = useSelectionStore((state) => state.isSelectMode);
@@ -15,14 +14,14 @@ export function useFileSelection() {
   };
 
   const selectFilesByIds = (ids: string[]) => {
-    const filesToSelect = files.filter((file) => ids.includes(file.fileID));
+    const filesToSelect = files.filter((file) => ids.includes(file._id));
 
     setSelectedFiles(filesToSelect);
   };
 
   const selectByFileType = (fileType: string) => {
     const filesToSelect = files.filter((file) =>
-      file.name.toLowerCase().endsWith(fileType.toLowerCase()),
+      file.fileName.toLowerCase().endsWith(fileType.toLowerCase()),
     );
 
     if (!isSelectMode) {

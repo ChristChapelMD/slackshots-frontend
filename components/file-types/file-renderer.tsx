@@ -25,7 +25,7 @@ export const FileRenderer = memo(
       const handler = item.fileType
         ? fileTypeRegistry.getHandlerForMimeType(item.fileType)
         : fileTypeRegistry.getHandlerForExtension(
-            item.name.split(".").pop() || "",
+            item.fileName.split(".").pop() || "",
           );
 
       if (!handler) {
@@ -58,7 +58,7 @@ export const FileRenderer = memo(
       }
 
       setComponent(() => RendererComponent);
-    }, [item.fileID, item.fileType, item.name, viewMode]);
+    }, [item._id, item.fileType, item.fileName, viewMode]);
 
     if (!Component) {
       return (

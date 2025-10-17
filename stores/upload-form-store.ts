@@ -6,7 +6,7 @@ interface UploadFormState {
   comment: string;
   messageBatchSize: number;
   fileTypes: string[];
-  sessionId: string;
+  uploadSessionId: string;
   fileSelection: string;
 }
 
@@ -24,7 +24,7 @@ const initialState: UploadFormState = {
   comment: "",
   messageBatchSize: 10,
   fileTypes: [".jpg", ".jpeg", ".png"],
-  sessionId: "",
+  uploadSessionId: "",
   fileSelection: "",
 };
 
@@ -47,5 +47,7 @@ export const useUploadFormStore = create<UploadFormStore>((set) => ({
     })),
 
   resetForm: () =>
-    set({ formState: { ...initialState, sessionId: crypto.randomUUID() } }),
+    set({
+      formState: { ...initialState, uploadSessionId: crypto.randomUUID() },
+    }),
 }));

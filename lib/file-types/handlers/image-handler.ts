@@ -40,7 +40,7 @@ export class ImageHandler implements FileTypeHandler {
     return (
       this.supportedMimeTypes.includes(file.fileType) ||
       this.supportedExtensions.some((ext) =>
-        file.name.toLowerCase().endsWith(`.${ext}`),
+        file.fileName.toLowerCase().endsWith(`.${ext}`),
       )
     );
   }
@@ -100,13 +100,16 @@ export class ImageHandler implements FileTypeHandler {
   }
 
   getActions(file: FileItem) {
+    const providerFileId = file.uploads?.[0]?.providerFileId;
+    const fileUrl = providerFileId ? `/api/files/${providerFileId}` : null;
+
     return [
       {
         id: "download",
         label: "Download",
         icon: "download",
         action: () =>
-          file.url && window.open(file.url, "_blank", "noopener,noreferrer"),
+          fileUrl && window.open(fileUrl, "_blank", "noopener,noreferrer"),
       },
       {
         id: "edit",

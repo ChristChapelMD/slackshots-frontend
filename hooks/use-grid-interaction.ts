@@ -24,7 +24,7 @@ export function useGridItemInteraction(item: FileItem) {
   const isAnimating = useDrawerStore((state) => state.isAnimating);
   const openDrawer = useDrawerStore((state) => state.openDrawer);
 
-  const isSelected = selectedFiles.some((file) => file.fileID === item.fileID);
+  const isSelected = selectedFiles.some((file) => file._id === item._id);
   const isDrawerOpen = isOpen || isAnimating;
   const isDisabled = isDrawerOpen || isUploading;
 
@@ -59,7 +59,7 @@ export function useGridItemInteraction(item: FileItem) {
     const handler = item.fileType
       ? fileTypeRegistry.getHandlerForMimeType(item.fileType)
       : fileTypeRegistry.getHandlerForExtension(
-          item.name.split(".").pop() || "",
+          item.fileName.split(".").pop() || "",
         );
 
     if (handler && handler.canPreview) {

@@ -10,7 +10,7 @@ export interface UploadOptions {
   channel: string;
   comment: string;
   messageBatchSize: number;
-  sessionId: string;
+  uploadSessionId: string;
   onProgress?: (overallProgress: number) => void;
 }
 

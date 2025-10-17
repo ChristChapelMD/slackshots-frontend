@@ -5,7 +5,6 @@ import {
   MutationKey,
 } from "@tanstack/react-query";
 import { addToast } from "@heroui/toast";
-import { useCallback } from "react";
 
 import { ToastOptions } from "@/types/toasts";
 import { toastConfig } from "@/config/toasts";
@@ -30,62 +29,58 @@ export function useToastMutation<
   options: UseToastMutationOptions<TData, TError, TVariables, TContext>,
   mutationKey?: MutationKey,
 ): UseMutationResult<TData, TError, TVariables, TContext> {
-  const wrappedMutationFn = useCallback(
-    async (variables: TVariables) => {
-      try {
-        const result = await options.mutationFn(variables);
+  const wrappedMutationFn = async (variables: TVariables) => {
+    try {
+      const result = await options.mutationFn(variables);
 
-        const toastSuccess = options.toast?.onSuccess;
+      const toastSuccess = options.toast?.onSuccess;
 
-        if (toastSuccess && toastSuccess.enabled !== false) {
-          const { severity, color } =
-            statusMap[toastSuccess.status ?? "default"];
+      if (toastSuccess && toastSuccess.enabled !== false) {
+        const { severity, color } = statusMap[toastSuccess.status ?? "default"];
 
-          if (!toastSuccess.disableDefault) {
-            addToast({
-              title: toastSuccess.title ?? "Success",
-              description:
-                typeof toastSuccess.description === "function"
-                  ? toastSuccess.description(result)
-                  : (toastSuccess.description ??
-                    "Operation completed successfully"),
-              severity: toastSuccess.severity ?? severity,
-              color: toastSuccess.color ?? color ?? "success",
-              timeout: toastSuccess.timeout ?? 5000,
-            });
-          }
-
-          toastSuccess.customLogic?.(result);
+        if (!toastSuccess.disableDefault) {
+          addToast({
+            title: toastSuccess.title ?? "Success",
+            description:
+              typeof toastSuccess.description === "function"
+                ? toastSuccess.description(result)
+                : (toastSuccess.description ??
+                  "Operation completed successfully"),
+            severity: toastSuccess.severity ?? severity,
+            color: toastSuccess.color ?? color ?? "success",
+            timeout: toastSuccess.timeout ?? 5000,
+          });
         }
 
-        return result;
-      } catch (error) {
-        const toastError = options.toast?.onError;
-
-        if (toastError && toastError.enabled !== false) {
-          const { severity, color } = statusMap[toastError.status ?? "default"];
-
-          if (!toastError.disableDefault) {
-            addToast({
-              title: toastError.title ?? "Error",
-              description:
-                typeof toastError.description === "function"
-                  ? toastError.description(error)
-                  : (toastError.description ?? "Something went wrong"),
-              severity: toastError.severity ?? severity ?? "danger",
-              color: toastError.color ?? color ?? "danger",
-              timeout: toastError.timeout ?? 7000,
-            });
-          }
-
-          toastError.customLogic?.(error);
-        }
-
-        throw error;
+        toastSuccess.customLogic?.(result);
       }
-    },
-    [options.mutationFn, options.toast],
-  );
+
+      return result;
+    } catch (error) {
+      const toastError = options.toast?.onError;
+
+      if (toastError && toastError.enabled !== false) {
+        const { severity, color } = statusMap[toastError.status ?? "default"];
+
+        if (!toastError.disableDefault) {
+          addToast({
+            title: toastError.title ?? "Error",
+            description:
+              typeof toastError.description === "function"
+                ? toastError.description(error)
+                : (toastError.description ?? "Something went wrong"),
+            severity: toastError.severity ?? severity ?? "danger",
+            color: toastError.color ?? color ?? "danger",
+            timeout: toastError.timeout ?? 7000,
+          });
+        }
+
+        toastError.customLogic?.(error);
+      }
+
+      throw error;
+    }
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { mutationFn, ...restOptions } = options;

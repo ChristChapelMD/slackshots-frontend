@@ -2,18 +2,22 @@
 
 import GridItem from "./grid-item";
 
-import { useFiles } from "@/hooks/use-files";
 import { useFileStore } from "@/stores/file-store";
 import { useUIStore } from "@/stores/ui-store";
 import LoadingAnimation from "@/components/ui/loading-animation";
 import { usePriorityTrack } from "@/hooks/use-priority-track";
 import { useGridDensity } from "@/hooks/use-grid-density";
+import { FileItem } from "@/types/service-types/file-service";
 
-export function GridView() {
+interface GridViewProps {
+  files: FileItem[];
+  isLoading: boolean;
+}
+
+export function GridView({ files, isLoading }: GridViewProps) {
   const { gridDensity } = useGridDensity();
   const viewMode = useUIStore((state) => state.viewMode);
 
-  const { files, isLoading } = useFiles();
   const setPrioritizedFileIds = useFileStore(
     (state) => state.setPrioritizedFileIds,
   );
@@ -24,7 +28,7 @@ export function GridView() {
     deps: [files.length],
   });
 
-  if (files.length === 0 && isLoading) {
+  if (isLoading && files.length === 0) {
     return (
       <div className="h-full flex items-center justify-center">
         <LoadingAnimation />
@@ -32,7 +36,7 @@ export function GridView() {
     );
   }
 
-  if (files.length === 0 && !isLoading) {
+  if (!isLoading && files.length === 0) {
     return (
       <div className="h-full w-full flex items-center justify-center">
         <p className="text-4xl text-zinc-500 dark:text-zinc-400 font-light">
@@ -58,7 +62,7 @@ export function GridView() {
         }
       >
         {files.map((item) => (
-          <div key={item.fileID} data-file-id={item.fileID}>
+          <div key={item._id} data-file-id={item._id}>
             <GridItem item={item} />
           </div>
         ))}

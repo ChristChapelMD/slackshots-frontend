@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { FileItem } from "@/types/service-types/file-service";
 import { useToastMutation } from "@/hooks/use-toast-mutation";
 import { useSelectionStore } from "@/stores/selection-store";
 import { client } from "@/services/client";
@@ -51,16 +52,12 @@ export function useFileDownload() {
 
   const singleFileMutation = useToastMutation(
     {
-      mutationFn: async (file: {
-        fileID: string;
-        name: string;
-        url: string;
-      }) => {
-        setDownloadingFile(file.fileID);
+      mutationFn: async (file: FileItem) => {
+        setDownloadingFile(file._id);
         try {
           await client.files.downloadSingleFile(file);
 
-          return { fileName: file.name };
+          return { fileName: file.fileName };
         } finally {
           setDownloadingFile(null);
         }
@@ -90,12 +87,11 @@ export function useFileDownload() {
     isDownloading: bulkDownloadMutation.isPending,
     downloadSelectedFiles: () => bulkDownloadMutation.mutate(),
 
-    downloadSingleFile: (file: { fileID: string; name: string; url: string }) =>
-      singleFileMutation.mutate(file),
+    downloadSingleFile: (file: FileItem) => singleFileMutation.mutate(file),
     isSingleFileDownloading: singleFileMutation.isPending || !!downloadingFile,
     isFileDownloading: (fileID: string) =>
       downloadingFile === fileID ||
       (singleFileMutation.isPending &&
-        singleFileMutation.variables?.fileID === fileID),
+        singleFileMutation.variables?._id === fileID),
   };
 }

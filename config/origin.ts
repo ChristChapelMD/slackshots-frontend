@@ -1,3 +1,5 @@
 export const originConfig = {
-  allowedOrigins: ["http://localhost:3000", "https://slackshots.vercel.app"],
+  allowedOrigins: process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(" ").map((origin) => origin.trim())
+    : [],
 };

@@ -7,6 +7,7 @@ import { useRef } from "react";
 
 import { SelectModeActionIcons } from "@/components/dashboard/header/select-mode/select-mode-button-icons";
 import { TextureContainer } from "@/components/ui/texture-container";
+import { useFiles } from "@/hooks/use-files";
 import { useDrawerStore } from "@/stores/drawer-store";
 import { useSelectionStore } from "@/stores/selection-store";
 import { useFileSelection } from "@/hooks/use-file-selection";
@@ -28,7 +29,8 @@ export function SelectActionButtons({ ltr }: { ltr?: boolean }) {
   const openDrawer = useDrawerStore((state) => state.openDrawer);
   const closeDrawer = useDrawerStore((state) => state.closeDrawer);
 
-  const { selectAllFiles } = useFileSelection();
+  const { files } = useFiles();
+  const { selectAllFiles } = useFileSelection(files);
   const { isDownloading, downloadSelectedFiles } = useFileDownload();
 
   const isDeletDrawerOpen = isOpen && drawerId === "delete";

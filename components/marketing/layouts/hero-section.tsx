@@ -6,6 +6,7 @@ import { Link as HeroLink } from "@heroui/link";
 import NextLink from "next/link";
 import Image from "next/image";
 
+import { MediaPlayer } from "@/components/ui/media-player";
 import { useAuth } from "@/hooks/use-auth";
 import SlackShotsLogo from "@/public/SSLOGO_NOBG.png";
 import WaveReveal from "@/components/ui/wave-reveal";
@@ -89,20 +90,23 @@ export function HeroSection() {
             delay: 0.7,
           }}
         >
-          <div className="w-full overflow-hidden rounded-xl dark:border-gray-700 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="aspect-[16/9] h-auto w-full object-cover"
-              height={1000}
-              width={1000}
-            >
-              <source src="/ss-placeholder-clip.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
+          <motion.div
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
+            className="relative z-10 mt-20 rounded-3xl border border-neutral-200 bg-neutral-100 p-4 shadow-md dark:border-neutral-800 dark:bg-neutral-900"
+            initial={{
+              opacity: 0,
+              y: 25,
+            }}
+            transition={{
+              duration: 0.3,
+              delay: 0.7,
+            }}
+          >
+            <MediaPlayer />
+          </motion.div>
         </motion.div>
       </div>
     </section>
